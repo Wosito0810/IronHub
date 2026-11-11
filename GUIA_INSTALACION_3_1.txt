@@ -1,0 +1,67 @@
+IRONHUB 3.1 — INSTALACION SEGURA DESDE IRONHUB 2.0/3.0
+=======================================================
+
+TU BASE DE DATOS NO SE DEBE RECREAR.
+NO ejecutes database/script_rionhub.sql: ese archivo tiene DROP DATABASE.
+NO ejecutes migracion_propuestas.sql de nuevo si ya instalaste 2.0.
+
+PASO 1. RESPALDO
+- En MySQL Workbench: Server > Data Export, selecciona ironhub_db,
+  Export to Self-Contained File y Start Export.
+- Copia tu carpeta IronHub actual a "IronHub - respaldo".
+- Incluye backend/uploads/propuestas y frontend/assets/ejercicios.
+- NO compartas backend/.env: contiene tu contraseña MySQL.
+
+PASO 2. ACTUALIZA ARCHIVOS
+- Cierra el backend con Ctrl+C.
+- Abre el ZIP IronHub 3.1.
+- Copia el CONTENIDO de IRONHUB_3_1 encima de tu carpeta IronHub actual.
+  En Windows elige reemplazar archivos cuando lo solicite.
+- NO elimines la carpeta original: al fusionar, tu backend/.env, entorno
+  backend/.venv, archivos subidos e imágenes locales se conservarán.
+- Si prefieres, guarda los nuevos archivos en una carpeta separada,
+  pero copia tu .env, .venv, uploads y fotos descargadas para continuar.
+
+PASO 3. MIGRACION MYSQL
+- En MySQL Workbench abre database/migracion_3_1.sql.
+- Ejecuta el script completo con el icono de rayo.
+- Deben crearse: sesiones_entrenamiento, series_entrenamiento, notificaciones.
+- No elimina las tablas existentes. Si aparece un error, no reejecutes script_rionhub.sql.
+
+PASO 4. INICIA FLASK
+- En VS Code abre tu carpeta IronHub y Terminal > Nueva terminal.
+- Escribe: cd backend
+- Después: .venv\Scripts\python.exe -m pip install -r requirements.txt
+- Después: .venv\Scripts\python.exe app.py
+- El servidor inicia en http://127.0.0.1:5050
+- Es normal que debas volver a iniciar sesión: la clave JWT se gestiona
+  ahora localmente mediante un archivo secreto.
+
+PASO 5. ABRE LA PAGINA
+- Abre frontend/index.html con Live Server.
+- En Chrome presiona Ctrl+F5.
+- Verás las pestañas "Mi progreso", "Mi perfil", "Avisos" y, si usas
+  la cuenta administradora, "Administración".
+
+PRUEBAS
+1) Entra como cliente; registra una sesión con 1-2 ejercicios.
+2) Consulta Mi progreso y verifica que aparecen al recargar.
+3) Edita tu perfil y comprueba que el nombre cambia en la barra superior.
+4) Envía una propuesta (puede ser con una foto de prueba propia).
+5) Entra con un administrador, ve a Administración, abre el adjunto,
+   aprueba o rechaza y observa las estadísticas.
+6) Entra otra vez como autor: la respuesta debe aparecer en Avisos.
+7) Puedes ejecutar pruebas sin datos reales desde backend:
+   .venv\Scripts\python.exe -m unittest discover -s ..\tests -v
+
+RESPALDOS POSTERIORES
+- Usa RESPALDAR_IRONHUB.bat si mysqldump.exe está instalado.
+- Guarda las copias en sitio privado. El ZIP incluirá SQL y las fotos/videos
+  de las propuestas. Nunca incluye backend/.env.
+
+NOTAS DE SEGURIDAD
+- Proyecto orientado a demostración LOCAL, no publicado en internet.
+- Cambia las contraseñas de los usuarios de demostración desde Mi perfil.
+- Para producción se requerirían HTTPS, validación/escaneo de multimedia,
+  política de privacidad, rate limiting y despliegue profesional.
+- Si falla una migración, conserva el respaldo antes de intentar correcciones.

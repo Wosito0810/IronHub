@@ -1,0 +1,16 @@
+IRONHUB 3.1 — ALCANCE DE LA VERIFICACION
+
+HECHO EN ESTE ENTORNO:
+- Todos los archivos Python nuevos y existentes compilan con compileall.
+- El JavaScript del nuevo módulo supera la verificación de sintaxis con node --check.
+- Se verificó que el HTML contiene los nuevos formularios y pestañas.
+- Se verificó que la migración 3.1 solo crea tablas nuevas (CREATE TABLE IF NOT EXISTS).
+
+PENDIENTE EN TU COMPUTADOR:
+- No se dispone aquí de un servidor MySQL conectado a tu base de datos.
+- En este entorno no fue posible instalar dependencias de Flask por falta de acceso
+  de red, por lo cual no se ejecutaron las pruebas con el servidor real.
+- Para validación completa: ejecutar tests/test_validaciones.py con tu entorno .venv
+  y hacer las pruebas de la GUI y de MySQL de GUIA_INSTALACION_3_1.txt.
+
+No se debe afirmar que los flujos completos de producción están verificados.

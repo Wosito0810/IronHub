@@ -1,0 +1,8 @@
+backend/.env
+backend/.jwt_secret
+backend/.venv/
+backend/uploads/propuestas/*
+!backend/uploads/propuestas/.gitkeep
+__pycache__/
+*.pyc
+respaldos/*.zip

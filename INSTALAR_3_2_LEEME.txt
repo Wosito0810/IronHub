@@ -1,0 +1,55 @@
+IRONHUB 3.2 — ACCESO, REGISTRO Y DISEÑO
+=====================================
+
+ESTA VERSIÓN SE INSTALA EN UNA SOLA ACTUALIZACIÓN.
+El registro permite crear cuentas de CLIENTE con nombre, apellido, correo y contraseña.
+El acceso ADMINISTRADOR utiliza cuentas autorizadas existentes, nunca el registro público.
+
+1. Haz una copia de seguridad de la carpeta IronHub actual y exporta ironhub_db desde MySQL Workbench.
+2. Descomprime IRONHUB_3_2_ACCESO_Y_REGISTRO.zip.
+3. Abre la carpeta IRONHUB_3_2 del archivo descomprimido y copia TODO SU CONTENIDO dentro de tu carpeta IronHub de escritorio.
+   Acepta reemplazar archivos existentes, pero NO BORRES la carpeta antigua antes de copiar.
+   De esta forma conservas backend/.env, backend/.venv, backend/.jwt_secret, backend/uploads y frontend/assets/ejercicios.
+4. NO ejecutes script_rionhub.sql. Ese archivo recrea la base y BORRA DATOS.
+   Si ya habías instalado correctamente IRONHUB 3.1, esta versión NO necesita ninguna migración nueva.
+5. Abre VS Code con tu carpeta IronHub. En la terminal del proyecto:
+   cd backend
+   .venv\Scripts\python.exe -m pip install -r requirements.txt
+   .venv\Scripts\python.exe app.py
+6. Mantén abierta la terminal. Abre frontend/index.html con Live Server y presiona Ctrl+F5 en Chrome.
+7. Si estabas conectado con una cuenta antigua, pulsa Cerrar sesión para mostrar la nueva portada.
+8. Para probar Crear cuenta: selecciona Cliente -> Crear cuenta gratis.
+   Usa un correo NO registrado. La contraseña requiere entre 8 y 128 caracteres,
+   al menos una letra y un número. Después del registro, inicia sesión.
+9. Para entrar como administrador: selecciona Administrador en el acceso o pulsa el botón superior.
+   Debes usar una cuenta que YA tenga rol ADMIN (número 1 en MySQL).
+   Un cliente normal no puede acceder a funciones administrativas.
+
+Si el sistema dice que no hay conexión, comprueba que app.py esté en http://127.0.0.1:5050.
+Si la base no responde, comprueba el archivo backend/.env que ya tenías configurado.
+
+ARCHIVOS ACTUALIZADOS EN 3.2:
+  frontend/index.html
+  frontend/ironhub-access.css (nuevo)
+  frontend/assets/logo-ironhub.svg (nuevo)
+  frontend/assets/hero-gimnasio.webp (nuevo)
+  backend/services.py
+  backend/repositories.py
+  tests/test_registro.py (nuevo)
+
+NOTAS DE SEGURIDAD:
+  - Las contraseñas nuevas se guardan como hash mediante Werkzeug.
+  - El frontend no puede asignar el rol administrador.
+  - Las rutas administrativas siguen protegidas por token y comprobación de rol.
+  - No incluye restablecimiento por correo: se debe gestionar con el administrador.
+  - Para ponerlo en Internet harían falta HTTPS, limitación de intentos de login,
+    recuperación de cuenta y una revisión de seguridad adicional.
+
+VERIFICACIONES REALIZADAS EN EL ENTORNO DE DESARROLLO:
+  - Código de Python parseado sin errores de sintaxis.
+  - Código JavaScript comprobado con Node.
+  - Navegación cliente/administrador/registro probada en Chrome automatizado.
+  - Formulario de registro comprobado con una respuesta de servidor simulada.
+  - Registro público validado con tests sin base de datos real.
+  - Vistas de escritorio/tableta/móvil revisadas por navegador automatizado.
+  - La creación efectiva de usuarios en TU MySQL debe probarse localmente.

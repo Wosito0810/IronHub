@@ -1,0 +1,191 @@
+/* IRONHUB 3.2 — Acceso y registro + identidad visual unificada.
+   Se carga DESPUÉS de ironhub-pro.css, sin modificar las funciones existentes. */
+:root {
+  --primary: #f04b32;
+  --primary-hover: #ff6d3a;
+  --bg-dark: #090d13;
+  --card-bg: #111824;
+  --card-border: #293440;
+  --text: #f8fafc;
+  --text-muted: #b0bfcc;
+  --info: #67bbe8;
+}
+body { background: radial-gradient(ellipse 75% 60% at 90% -16%, rgba(230,55,36,.14), transparent), #090d13; }
+navbar { border-bottom: 1px solid #28313e; padding: 12px clamp(16px,3vw,52px); }
+navbar .logo {display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:1.92rem;letter-spacing:1px;color:#f5f5f6;text-shadow:none;white-space:nowrap;}
+navbar .logo::before {display:none;content:none;}
+.ih-logo-img {display:block;flex-shrink:0;filter:drop-shadow(0 6px 12px rgba(255,81,51,.12))}
+.ih-brand-accent {color:#ff6745}
+.ih-top-admin {background:#19232f;border:1px solid #3e4c5c;border-radius:11px;padding:11px 15px;color:#d9e3eb;font:700 .84rem 'Barlow',sans-serif;cursor:pointer;transition:.2s;white-space:nowrap}
+.ih-top-admin:hover,.ih-top-admin.is-selected {color:#fff;border-color:#ff7852;background:#3a221d}
+.ih-top-admin[hidden] {display:none}
+.user-nav-container {gap:12px}
+body.ih-auth-active .main-container {max-width:1440px;width:min(96%,1440px);margin:32px auto 54px}
+#seccion-login {
+  width:100%;max-width:none;margin:0;padding:0;
+  display:grid;grid-template-columns:minmax(0,1.06fr) minmax(400px,.94fr);
+  min-height:min(720px,calc(100vh - 140px));
+  background:#111923;border:1px solid #344050;overflow:hidden;
+  border-radius:24px;box-shadow:0 28px 70px rgba(0,0,0,.35);
+  animation:fadeIn .28s ease;
+}
+#seccion-login::before {display:none;content:none;}
+#seccion-login[style*="display: none"] {display:none!important}
+.ih-auth-visual {
+  position:relative;overflow:hidden;
+  background:linear-gradient(155deg,#1b2029,#10151e 60%,#0a1119);
+  min-height:620px;
+}
+.ih-auth-visual::before {
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(90deg,rgba(8,11,17,.12),rgba(8,11,17,.35)),url("assets/hero-gimnasio.webp");
+  background-repeat:no-repeat;background-size:cover;background-position:center 31%;
+  opacity:.82;transform:scale(1.02);
+}
+.ih-photo-shade {position:absolute;inset:0;background:linear-gradient(0deg,#0b1019 0%,rgba(10,15,22,.87) 25%,rgba(13,17,24,.34) 60%,rgba(15,17,23,.12) 100%);}
+.ih-auth-visual::after {content:"";position:absolute;inset:0;border-top:4px solid #f34e30;pointer-events:none}
+.ih-auth-visual-content {position:absolute;bottom:0;left:0;right:0;padding:clamp(25px,4vw,60px);z-index:1;max-width:720px}
+.ih-kicker {display:inline-flex;align-items:center;gap:9px;color:#ffc6b1;font-size:.76rem;font-weight:800;letter-spacing:2.2px}
+.ih-live-dot {width:8px;height:8px;border-radius:50%;background:#ff603b;box-shadow:0 0 0 5px rgba(244,78,49,.15)}
+.ih-auth-visual h1 {font-family:'Barlow Condensed',sans-serif;color:#fff;font-size:clamp(3.3rem,5.4vw,5.7rem);font-weight:700;line-height:.97;letter-spacing:.4px;margin:20px 0;max-width:580px}
+.ih-auth-visual h1 span {color:#ff6542}
+.ih-auth-visual p {color:#e3e8ee;line-height:1.6;font-size:1.05rem;max-width:515px}
+.ih-feature-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:30px}
+.ih-feature-grid>div {display:flex;flex-direction:column;gap:6px;padding:14px;border:1px solid rgba(203,222,240,.26);border-radius:13px;background:rgba(10,17,24,.58);backdrop-filter:blur(12px)}
+.ih-feature-grid strong {color:#ff8e67;font-family:'Barlow Condensed',sans-serif;font-size:1.24rem;line-height:1}
+.ih-feature-grid span {color:#f0f5f7;font-size:.8rem;font-weight:650;line-height:1.3}
+.ih-auth-panel {display:flex;flex-direction:column;justify-content:center;max-width:640px;width:100%;margin:auto;padding:clamp(26px,4.3vw,62px);}
+.ih-auth-panel-top {display:flex;align-items:center;gap:11px;justify-content:center;margin-bottom:25px}
+.ih-auth-panel-top img {flex-shrink:0}
+.ih-auth-panel-top>div {display:flex;flex-direction:column}
+.ih-panel-brand {font-family:'Barlow Condensed',sans-serif;font-size:2.1rem;font-weight:800;line-height:1;color:white;letter-spacing:1.1px}
+.ih-panel-brand span {color:#ff6546}
+.ih-auth-panel-top small {font-size:.63rem;font-weight:800;color:#98aab9;letter-spacing:1.5px;margin-top:5px}
+.ih-auth-mode {display:flex;gap:5px;padding:5px;border:1px solid #384455;background:#0e1620;border-radius:14px;margin-bottom:26px}
+.ih-auth-mode button {flex:1;min-height:44px;padding:10px;border:none;border-radius:10px;background:transparent;color:#adbccc;font:700 .92rem 'Barlow',sans-serif;cursor:pointer;transition:background .18s,color .18s}
+.ih-auth-mode button:hover {color:#fff}
+.ih-auth-mode button.is-active {background:linear-gradient(135deg,#e53f2d,#ff6c3f);color:white;box-shadow:0 6px 17px rgba(229,56,37,.24)}
+.ih-panel-heading {margin:0 0 26px}
+.ih-mini-title {font-size:.69rem;letter-spacing:1.8px;color:#ff8b64!important;font-weight:800;margin-bottom:9px!important}
+.ih-panel-heading h2 {font-family:'Barlow Condensed',sans-serif;color:#fff;font-size:clamp(1.9rem,3vw,2.55rem);font-weight:700;line-height:1.12;margin:0 0 9px!important}
+.ih-panel-heading>p:last-child {font-size:.96rem;color:#b9c7d3;margin:0;line-height:1.5}
+.ih-auth-panel .form-group {margin-bottom:17px}
+.ih-auth-panel label {font-size:.82rem;font-weight:700;color:#d0d9e2;letter-spacing:.2px;text-transform:none;margin-bottom:8px}
+.ih-auth-panel input {min-height:49px;border-radius:11px;border:1px solid #3a4657;background:#111b27;padding:12px 15px;font-size:1rem;color:#fff}
+.ih-auth-panel input::placeholder {color:#7e8c9a}
+.ih-auth-panel input:focus {border-color:#ff7954;box-shadow:0 0 0 3px rgba(255,89,59,.15)}
+.ih-auth-panel .ih-password-wrap {position:relative}
+.ih-password-wrap input {padding-right:75px;width:100%}
+.ih-toggle-pass {position:absolute;top:50%;right:9px;transform:translateY(-50%);border:0;background:#273747;color:#d5e1e9;font:700 .76rem 'Barlow',sans-serif;cursor:pointer;border-radius:8px;padding:8px 10px}
+.ih-toggle-pass:hover {background:#35495b}
+.ih-auth-panel .ih-auth-submit {width:100%;min-height:51px;border:0;border-radius:11px;margin-top:10px;font-size:1rem;background:linear-gradient(100deg,#ef402e,#ff683a);display:flex;align-items:center;justify-content:center;gap:14px}
+.ih-auth-panel .ih-auth-submit:hover {background:linear-gradient(100deg,#ff633e,#ff8656)}
+.ih-auth-submit span {font-size:1.3rem;line-height:1}
+.ih-auth-switch {color:#adbcc8;text-align:center;font-size:.91rem;margin:20px 0 5px;line-height:1.5}
+.ih-auth-switch button {background:none;border:0;color:#ff9b79;font-weight:800;font-size:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.ih-auth-switch button:hover {color:#fff}
+.ih-admin-note {font-size:.84rem;color:#ffd0b5;background:#34231f;border:1px solid #7b4739;border-radius:10px;padding:12px 13px;line-height:1.5;margin-top:18px}
+.ih-auth-help {text-align:center;font-size:.79rem;line-height:1.45;color:#8093a5;margin:18px 0 0}
+.ih-optional {color:#7e91a5;font-size:.78rem;font-weight:400}
+.ih-field-hint {display:block;color:#9eafbe;font-size:.77rem;margin-top:7px}
+.ih-registro-nombres {display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ih-registro-nombres>.form-group {min-width:0}
+#ih-vista-registro .ih-panel-heading {margin-bottom:18px}
+#ih-vista-registro .form-group {margin-bottom:12px}
+#ih-vista-registro .ih-auth-switch {margin-top:15px}
+/* La interfaz interna conserva las funcionalidades, pero adopta navegación lateral en escritorio. */
+body:not(.ih-auth-active) .main-container {max-width:1630px;width:min(97%,1630px);margin:25px auto 55px}
+#panel-cliente {display:grid;grid-template-columns:230px minmax(0,1fr);column-gap:26px;row-gap:18px;background:transparent;border:0;box-shadow:none;padding:0;align-content:start;}
+#panel-cliente[style*="display: none"] {display:none!important}
+#panel-cliente>.hero-ironhub {grid-column:2;grid-row:1;margin:0;border-radius:18px;background:linear-gradient(115deg,rgba(210,58,42,.25),#17202d 80%);min-height:215px;}
+#panel-cliente>.metric-grid {grid-column:2;grid-row:2;margin:0;}
+#panel-cliente>.nav-tabs {grid-column:1;grid-row:1 / 4;align-self:start;position:sticky;top:87px;display:flex;flex-direction:column;gap:5px;margin:0;padding:21px 13px;background:#131d28;border:1px solid #334152;border-radius:17px;max-height:calc(100dvh - 106px);overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;box-shadow:0 16px 30px rgba(0,0,0,.14)}
+#panel-cliente>.nav-tabs::before {content:"MENU PRINCIPAL";font-size:.74rem;letter-spacing:1.55px;color:#8092a2;font-weight:800;padding:1px 10px 10px}
+#panel-cliente>.nav-tabs .tab-btn {display:flex;align-items:center;justify-content:flex-start;gap:8px;width:100%;text-align:left;white-space:normal;line-height:1.3;border-radius:10px;padding:12px 13px;min-height:43px;font-size:.89rem;color:#c5d3df;border-color:transparent;background:transparent;box-shadow:none}
+#panel-cliente>.nav-tabs .tab-btn:hover {background:#263444;border-color:#34495d;color:#fff}
+#panel-cliente>.nav-tabs .tab-btn.active {background:linear-gradient(95deg,#e94731,#ff683b);border-color:transparent;color:#fff;box-shadow:0 8px 19px rgba(239,66,42,.16)}
+#panel-cliente>.section-view {grid-column:2;grid-row:3;min-width:0;background:linear-gradient(140deg,#131e29,#111923);border:1px solid #2d3949;border-radius:17px;padding:clamp(19px,2.5vw,31px);box-shadow:0 12px 32px rgba(0,0,0,.12)}
+body.ih-admin-session #panel-cliente>.hero-ironhub, body.ih-admin-session #panel-cliente>.metric-grid:not(.admin-metricas) {display:none}
+body.ih-admin-session #panel-cliente>.section-view {grid-row:1}
+body.ih-admin-session #panel-cliente>.nav-tabs {grid-row:1 / 3}
+body.ih-admin-session #panel-cliente>.nav-tabs::before {content:"ADMINISTRACIÓN"}
+#panel-cliente .tab-btn[hidden] {display:none!important}
+#panel-cliente .biblioteca-card {box-shadow:0 14px 30px rgba(0,0,0,.13)}
+#panel-cliente .biblioteca-card:hover {border-color:#f76c47;transform:translateY(-4px)}
+#panel-cliente .metric {background:linear-gradient(145deg,#172636,#121e2b);border-color:#344556}
+#panel-cliente .metric-value {color:#fbf8f7}
+#panel-cliente .panel-pro {background:#182533}
+#panel-cliente .btn-success {color:#072219}
+#panel-cliente .tab-btn:focus-visible,button:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible {outline:2px solid #ffad84;outline-offset:2px}
+@media(max-width:1040px) {
+  #panel-cliente {grid-template-columns:196px minmax(0,1fr);column-gap:16px}
+  #panel-cliente>.nav-tabs {padding:15px 9px}
+  #panel-cliente>.nav-tabs .tab-btn {font-size:.82rem;padding:10px 9px}
+  #seccion-login {grid-template-columns:minmax(0,.9fr) minmax(390px,1.1fr)}
+  .ih-auth-visual-content {padding:32px}
+  .ih-feature-grid {gap:7px}
+  .ih-feature-grid>div {padding:10px}
+}
+@media(max-width:850px) {
+  #panel-cliente,
+  #panel-cliente[style*="display: grid"] {display:block!important;padding:0}
+  #panel-cliente>.hero-ironhub {margin-bottom:15px}
+  #panel-cliente>.metric-grid {margin:0 0 17px}
+  #panel-cliente>.nav-tabs {position:relative;top:auto;max-height:none;display:flex;flex-direction:row;overflow-x:auto;overflow-y:hidden;gap:7px;margin:0 0 15px;padding:12px;white-space:nowrap;border-radius:12px}
+  #panel-cliente>.nav-tabs::before {display:none}
+  #panel-cliente>.nav-tabs .tab-btn {width:auto;min-width:max-content;white-space:nowrap;padding:10px 12px}
+  #panel-cliente>.section-view {padding:22px 18px}
+  #seccion-login {grid-template-columns:1fr;min-height:0;max-width:610px;margin:auto}
+  .ih-auth-visual {min-height:275px}
+  .ih-auth-visual::before {background-position:center 30%}
+  .ih-auth-visual-content {padding:24px 30px}
+  .ih-auth-visual h1 {font-size:2.5rem;margin:8px 0}
+  .ih-auth-visual h1 br:nth-of-type(2) {display:none}
+  .ih-auth-visual p {font-size:.89rem;max-width:490px}
+  .ih-feature-grid {margin-top:13px}
+  .ih-feature-grid strong {display:none}
+  .ih-auth-panel {padding:28px 35px 36px}
+  .ih-auth-panel-top {margin-bottom:19px}
+}
+@media(max-width:540px) {
+  navbar {padding:10px 12px}
+  navbar .logo {font-size:1.46rem;gap:6px}
+  .ih-logo-img {width:34px;height:34px}
+  .ih-top-admin {font-size:.7rem;max-width:130px;white-space:normal;padding:7px 9px}
+  body.ih-auth-active .main-container {width:96%;margin:14px auto 35px}
+  #seccion-login {border-radius:16px}
+  .ih-auth-visual {min-height:250px}
+  .ih-auth-visual-content {padding:20px}
+  .ih-auth-visual h1 {font-size:2.45rem}
+  .ih-auth-visual p {font-size:.82rem}
+  .ih-feature-grid {grid-template-columns:repeat(3,1fr);gap:5px;margin-top:13px}
+  .ih-feature-grid>div {min-width:0;padding:7px;border-radius:8px}
+  .ih-feature-grid span {font-size:.65rem}
+  .ih-kicker {font-size:.59rem;letter-spacing:1px}
+  .ih-auth-panel {padding:23px 19px 28px}
+  .ih-panel-brand {font-size:1.7rem}
+  .ih-auth-panel-top img {width:37px;height:37px}
+  .ih-auth-mode {margin-bottom:19px}
+  .ih-panel-heading {margin-bottom:17px}
+  .ih-panel-heading h2 {font-size:2.05rem}
+  .ih-panel-heading>p:last-child {font-size:.88rem}
+  .ih-registro-nombres {grid-template-columns:1fr;gap:0}
+  .ih-auth-panel input {min-height:46px}
+  #panel-cliente>.nav-tabs .tab-btn {font-size:.8rem}
+  body:not(.ih-auth-active) .main-container {width:96%;margin:15px auto 36px}
+  #panel-cliente>.section-view {padding:16px 13px}
+  #panel-cliente>.hero-ironhub {padding:22px 18px}
+}
+@media(prefers-reduced-motion:reduce) {
+  #seccion-login,.ih-auth-mode button {animation:none;transition:none}
+}
+/* Pulido de la pantalla de acceso en resoluciones pequeñas */
+#seccion-login .ih-panel-heading h2 {color:#fff!important;font-family:'Barlow Condensed',sans-serif!important;letter-spacing:.2px}
+body.ih-auth-active .ayuda-flotante,
+body.ih-auth-active .ayuda-panel {display:none!important}
+@media (min-width:851px) {
+  #seccion-login:has(#ih-vista-registro:not([hidden])) .ih-auth-visual-content {top:15%;bottom:auto}
+}
+@media (max-width:540px) {
+  .ih-auth-visual h1 {font-size:2.06rem;letter-spacing:-.5px;line-height:1.04}
+}

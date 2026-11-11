@@ -1,0 +1,2841 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IRONHUB - High Performance Gym</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #ff5722;
+        --primary-hover: #f4511e;
+        --bg-dark: #0a0a0a;
+        --card-bg: #141414;
+        --card-border: #222222;
+        --text: #ffffff;
+        --text-muted: #888888;
+        --success: #00e676;
+        --error: #ff5252;
+        --info: #00b0ff;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Barlow", sans-serif;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+      body {
+        background-color: var(--bg-dark);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Navbar */
+      navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+        background: rgba(20, 20, 20, 0.9);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--card-border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .logo {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 2.2rem;
+        color: var(--primary);
+        letter-spacing: 2px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      .user-nav-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .user-badge {
+        background: #1f1f1f;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        color: var(--text);
+        border: 1px solid #333;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .btn-logout {
+        background: #2a120a;
+        color: #ff5722;
+        border: 1px solid #ff5722;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-transform: uppercase;
+      }
+      .btn-logout:hover {
+        background: var(--primary);
+        color: white;
+      }
+
+      /* Contenedor Principal */
+      .main-container {
+        max-width: 950px;
+        margin: 40px auto;
+        width: 92%;
+        flex: 1;
+      }
+      .card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        padding: 35px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.4s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Formularios */
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: var(--text-muted);
+        font-size: 0.92rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 14px 18px;
+        border-radius: 10px;
+        border: 1px solid #2a2a2a;
+        background: #1b1b1b;
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s;
+      }
+      input:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.15);
+      }
+
+      /* Botones */
+      .btn {
+        width: 100%;
+        padding: 14px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 10px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+      .btn:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 87, 34, 0.3);
+      }
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+      .btn-success {
+        background: var(--success);
+        color: #0a0a0a;
+      }
+      .btn-success:hover {
+        background: #00c853;
+        box-shadow: 0 5px 15px rgba(0, 230, 118, 0.3);
+      }
+      .btn-info {
+        background: var(--info);
+        color: #0a0a0a;
+      }
+      .btn-info:hover {
+        background: #0091ea;
+      }
+
+      /* Pestañas */
+      .nav-tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 30px;
+        border-bottom: 1px solid var(--card-border);
+        padding-bottom: 15px;
+        overflow-x: auto;
+      }
+      .tab-btn {
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
+        color: var(--text-muted);
+        padding: 10px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .tab-btn:hover {
+        color: white;
+        background: #222;
+      }
+      .tab-btn.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+        box-shadow: 0 4px 12px rgba(255, 87, 34, 0.25);
+      }
+
+      .section-view {
+        display: none;
+      }
+      .section-view.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+
+      /* Tarjetas */
+      .grid-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+      }
+      .card-option {
+        background: #181818;
+        border: 1px solid #2a2a2a;
+        padding: 20px;
+        border-radius: 12px;
+        transition: all 0.3s;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .card-option:hover {
+        border-color: var(--primary);
+        transform: translateY(-3px);
+      }
+      .card-option h4 {
+        color: var(--primary);
+        margin-bottom: 8px;
+        font-size: 1.15rem;
+      }
+      .card-option p {
+        font-size: 0.88rem;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+        line-height: 1.4;
+      }
+
+      /* Catálogo agrupado y visor */
+      .grupo-grupo-container {
+        margin-bottom: 18px;
+        background: #181818;
+        border: 1px solid #262626;
+        border-radius: 12px;
+        padding: 18px;
+      }
+      .grupo-titulo {
+        font-family: "Barlow Condensed";
+        font-size: 1.3rem;
+        color: var(--primary);
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        border-bottom: 1px solid #2a2a2a;
+        padding-bottom: 6px;
+        letter-spacing: 0.5px;
+      }
+      .ejercicio-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #1b1b1b;
+        padding: 12px 16px;
+        margin-bottom: 6px;
+        border-radius: 8px;
+        border: 1px solid #252525;
+        gap: 10px;
+        transition: all 0.2s;
+      }
+      .ejercicio-item.seleccionado {
+        border-color: var(--primary);
+        background: #1f1714;
+      }
+
+      .resultado-box {
+        background: #1b1b1b;
+        padding: 25px;
+        border-radius: 12px;
+        margin-top: 20px;
+        border-left: 4px solid var(--primary);
+        border: 1px solid #262626;
+        max-width: 100%;
+      }
+
+      /* Tarjeta de ejercicio bien explicada */
+      .ejercicio-explicado-card {
+        background: #181818;
+        border: 1px solid #2a2a2a;
+        border-radius: 10px;
+        padding: 18px;
+        margin-bottom: 12px;
+      }
+      .ejercicio-explicado-card h4 {
+        color: var(--primary);
+        font-size: 1.2rem;
+        margin-bottom: 4px;
+        font-family: "Barlow Condensed";
+        letter-spacing: 0.5px;
+      }
+      .ejercicio-explicado-card .meta {
+        font-size: 0.85rem;
+        color: #00e676;
+        margin-bottom: 8px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .ejercicio-explicado-card .desc {
+        font-size: 0.92rem;
+        color: var(--text-muted);
+        line-height: 1.4;
+      }
+      .ejercicio-titulo {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 4px;
+      }
+      .ejercicio-titulo h4 {
+        margin-bottom: 0;
+      }
+      .btn-mini.ver-ejercicio {
+        background: rgba(0, 176, 255, 0.08);
+        border-color: rgba(0, 176, 255, 0.5);
+        color: #67d4ff;
+      }
+      .btn-mini.ver-ejercicio:hover {
+        background: var(--info);
+        color: #0a0a0a;
+      }
+
+      /* Demostración individual de un ejercicio */
+      .demo-galeria {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin: 14px 0 10px;
+      }
+      .demo-galeria figure {
+        margin: 0;
+        background: #111;
+        border: 1px solid #2a2a2a;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .demo-galeria img {
+        display: block;
+        width: 100%;
+        height: 220px;
+        object-fit: contain;
+        background: #fff;
+      }
+      .demo-galeria figcaption {
+        padding: 7px 10px;
+        color: var(--text-muted);
+        font-size: 0.76rem;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+      }
+      .demo-sin-media {
+        grid-column: 1 / -1;
+        padding: 18px;
+        border: 1px dashed #333;
+        border-radius: 10px;
+        color: var(--text-muted);
+        text-align: center;
+        font-size: 0.88rem;
+        line-height: 1.5;
+      }
+      .demo-aviso {
+        color: #777;
+        font-size: 0.76rem;
+        line-height: 1.4;
+        margin-bottom: 14px;
+      }
+      .demo-guia {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 14px;
+      }
+      .demo-guia section {
+        background: #171717;
+        border: 1px solid #292929;
+        border-radius: 10px;
+        padding: 14px;
+      }
+      .demo-guia h4 {
+        color: var(--primary);
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.05rem;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+      }
+      .demo-guia ol,
+      .demo-guia ul {
+        padding-left: 18px;
+        margin: 0;
+      }
+      .demo-guia li {
+        color: #ddd;
+        font-size: 0.88rem;
+        line-height: 1.45;
+        margin-bottom: 6px;
+      }
+      .demo-resumen {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 4px;
+      }
+      .demo-credito {
+        color: #666;
+        font-size: 0.72rem;
+        line-height: 1.4;
+        margin-top: 12px;
+      }
+      .modal-acciones a.btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        text-decoration: none;
+        box-sizing: border-box;
+      }
+      @media (max-width: 620px) {
+        .demo-galeria,
+        .demo-guia {
+          grid-template-columns: 1fr;
+        }
+        .demo-galeria img {
+          height: 200px;
+        }
+      }
+
+      .rutina-dia-card {
+        background: #181818;
+        border: 1px solid #282828;
+        border-radius: 10px;
+        padding: 18px;
+        margin-bottom: 14px;
+      }
+      .rutina-dia-card h5 {
+        color: var(--primary);
+        font-size: 1.15rem;
+        margin-bottom: 8px;
+        font-family: "Barlow Condensed";
+        letter-spacing: 0.5px;
+      }
+      .rutina-dia-card.descanso {
+        border-left: 4px solid #00e676;
+      }
+      .rutina-dia-card.descanso h5 {
+        color: #00e676;
+      }
+      .rutina-dia-card ul {
+        padding-left: 20px;
+      }
+      .rutina-dia-card li {
+        margin-bottom: 5px;
+        color: #ddd;
+        font-size: 0.95rem;
+      }
+
+      .guia-semanal-box {
+        background: #1a1a1a;
+        border: 1px solid #333;
+        padding: 18px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        font-size: 0.92rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+      }
+      .guia-semanal-box b {
+        color: var(--primary);
+      }
+
+      /* ============================================================ */
+      /* Nuevos componentes del módulo de rutinas                      */
+      /* ============================================================ */
+      .muted {
+        color: var(--text-muted);
+      }
+      .empty-state {
+        padding: 30px 20px;
+        text-align: center;
+        color: var(--text-muted);
+        background: #151515;
+        border: 1px dashed #333;
+        border-radius: 12px;
+        line-height: 1.5;
+      }
+      .empty-state b {
+        color: var(--text);
+        display: block;
+        margin-bottom: 4px;
+      }
+      .loading {
+        padding: 26px;
+        text-align: center;
+        color: var(--text-muted);
+      }
+      .resultado-titulo {
+        font-family: "Barlow Condensed", sans-serif;
+        color: var(--primary);
+        font-size: 1.3rem;
+        letter-spacing: 0.5px;
+        margin-bottom: 14px;
+        text-transform: uppercase;
+      }
+      .card-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .card-acciones {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .badge-tipo {
+        display: inline-block;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-weight: 700;
+        margin-top: 4px;
+      }
+      .badge-tipo.especializada {
+        background: rgba(255, 87, 34, 0.14);
+        color: #ff8a65;
+        border: 1px solid rgba(255, 87, 34, 0.4);
+      }
+      .badge-tipo.personalizada {
+        background: rgba(0, 230, 118, 0.12);
+        color: var(--success);
+        border: 1px solid rgba(0, 230, 118, 0.35);
+      }
+      .btn-mini {
+        padding: 8px 12px;
+        font-size: 0.78rem;
+        border-radius: 8px;
+        border: 1px solid #333;
+        background: #1f1f1f;
+        color: #ddd;
+        cursor: pointer;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .btn-mini:hover {
+        background: #2a2a2a;
+        color: #fff;
+      }
+      .btn-mini.peligro {
+        background: #2a120a;
+        border-color: rgba(255, 82, 82, 0.6);
+        color: #ff8a80;
+      }
+      .btn-mini.peligro:hover {
+        background: var(--error);
+        color: #fff;
+      }
+      .btn-mini.editar {
+        background: rgba(0, 176, 255, 0.08);
+        border-color: rgba(0, 176, 255, 0.5);
+        color: #67d4ff;
+      }
+      .btn-mini.editar:hover {
+        background: var(--info);
+        color: #0a0a0a;
+      }
+      .btn-compacto {
+        width: auto;
+        flex: 1;
+        padding: 8px;
+        font-size: 0.82rem;
+        margin: 0;
+      }
+      .desc-plan {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 14px;
+      }
+      .chk-wrap {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        cursor: pointer;
+        flex: 1;
+        min-width: 200px;
+        color: #ddd;
+        font-size: 0.92rem;
+        text-transform: none;
+        letter-spacing: 0;
+        margin: 0;
+        font-weight: 400;
+      }
+      .chk-ejercicio {
+        width: 18px;
+        height: 18px;
+        flex: 0 0 18px;
+        margin-top: 3px;
+        accent-color: var(--primary);
+        cursor: pointer;
+      }
+      .series-reps {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        white-space: nowrap;
+      }
+      .num-input {
+        width: 64px;
+        padding: 8px 6px;
+        text-align: center;
+        border-radius: 8px;
+        border: 1px solid #2f2f2f;
+        background: #101010;
+        color: #fff;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+      .num-input:focus {
+        border-color: var(--primary);
+      }
+      .plan-meta {
+        color: #00e676 !important;
+        font-size: 0.8rem !important;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        font-weight: 600;
+      }
+      .mi-rutina-card {
+        background: #181818;
+        border: 1px solid #282828;
+        border-radius: 10px;
+        padding: 16px 18px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+      }
+      .mi-rutina-card h4 {
+        color: var(--primary);
+        font-size: 1.1rem;
+        font-family: "Barlow Condensed";
+        letter-spacing: 0.4px;
+        margin-bottom: 4px;
+      }
+      .mi-rutina-card .meta {
+        font-size: 0.82rem;
+        color: var(--success);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin-bottom: 8px;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .chip {
+        background: #1f1f1f;
+        border: 1px solid #2e2e2e;
+        border-radius: 20px;
+        padding: 3px 10px;
+        font-size: 0.76rem;
+        color: #bbb;
+      }
+      .edit-ejercicio {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        background: #1b1b1b;
+        border: 1px solid #262626;
+        border-radius: 8px;
+        padding: 10px 12px;
+        margin-bottom: 8px;
+      }
+      .edit-ejercicio .edit-nombre {
+        font-size: 0.92rem;
+        color: #ddd;
+        flex: 1;
+        min-width: 160px;
+      }
+      .desglose-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .desglose-header h4 {
+        color: var(--primary);
+        font-size: 1.3rem;
+        font-family: "Barlow Condensed";
+        letter-spacing: 0.5px;
+      }
+
+      /* Modales */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.78);
+        backdrop-filter: blur(3px);
+        z-index: 3000;
+        padding: 20px;
+        overflow-y: auto;
+      }
+      .modal-overlay.visible {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding-top: 6vh;
+      }
+      .modal {
+        background: var(--card-bg);
+        border: 1px solid #2c2c2c;
+        border-radius: 16px;
+        padding: 26px;
+        width: 100%;
+        max-width: 560px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
+        animation: fadeIn 0.25s ease;
+      }
+      .modal.ancho {
+        max-width: 720px;
+      }
+      .modal-cabecera {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+      .modal-cabecera h3 {
+        font-family: "Barlow Condensed", sans-serif;
+        color: var(--primary);
+        font-size: 1.5rem;
+        letter-spacing: 0.5px;
+        line-height: 1.15;
+      }
+      .modal-cerrar {
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        font-size: 1.6rem;
+        line-height: 1;
+        cursor: pointer;
+        padding: 0 4px;
+      }
+      .modal-cerrar:hover {
+        color: var(--primary);
+      }
+      .modal-subtitulo {
+        color: var(--text-muted);
+        font-size: 0.92rem;
+        line-height: 1.5;
+        margin-bottom: 8px;
+      }
+      .dias-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        gap: 10px;
+        margin-top: 18px;
+      }
+      .dia-opcion {
+        padding: 14px 10px;
+        border-radius: 10px;
+        border: 1px solid #2a2a2a;
+        background: #1b1b1b;
+        color: #fff;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+        text-align: center;
+        font-size: 0.9rem;
+      }
+      .dia-opcion:hover {
+        border-color: var(--primary);
+        background: #241a16;
+        transform: translateY(-2px);
+      }
+      .dia-opcion .num {
+        display: block;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.5rem;
+        color: var(--primary);
+        line-height: 1;
+        margin-bottom: 4px;
+      }
+      .modal-acciones {
+        display: flex;
+        gap: 10px;
+        margin-top: 22px;
+        flex-wrap: wrap;
+      }
+      .modal-acciones .btn {
+        margin-top: 0;
+        flex: 1;
+        min-width: 140px;
+      }
+      .btn-secundario {
+        background: #1f1f1f;
+        color: #ddd;
+        border: 1px solid #333;
+      }
+      .btn-secundario:hover {
+        background: #2a2a2a;
+        box-shadow: none;
+      }
+      .btn-peligro {
+        background: var(--error);
+        color: #fff;
+      }
+      .btn-peligro:hover {
+        background: #d32f2f;
+        box-shadow: 0 5px 15px rgba(255, 82, 82, 0.3);
+      }
+
+      /* Toast notifications */
+      #toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: min(380px, 92vw);
+      }
+      .toast {
+        background: #222;
+        color: white;
+        padding: 14px 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        font-size: 0.95rem;
+        border-left: 5px solid var(--primary);
+        animation: slideIn 0.3s ease;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        line-height: 1.4;
+      }
+      .toast.success {
+        border-left-color: var(--success);
+      }
+      .toast.error {
+        border-left-color: var(--error);
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .card {
+          padding: 22px;
+        }
+        navbar {
+          padding: 16px 20px;
+        }
+        .logo {
+          font-size: 1.7rem;
+        }
+        .ejercicio-item {
+          flex-wrap: wrap;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="ironhub-pro.css" />
+    <link rel="stylesheet" href="ironhub-access.css" />
+  </head>
+  <body class="ih-auth-active">
+    <navbar>
+      <div class="logo"><img src="assets/logo-ironhub.svg" alt="" width="43" height="43" class="ih-logo-img"><span>IRON<span class="ih-brand-accent">HUB</span></span></div>
+      <div class="user-nav-container">
+        <button id="nav-acceso-admin" class="ih-top-admin" type="button" onclick="mostrarAcceso('admin')">Acceso administrador</button>
+        <div
+          id="user-info-badge"
+          class="user-badge"
+          style="display: none"
+        ></div>
+        <button
+          id="btn-logout"
+          class="btn-logout"
+          style="display: none"
+          onclick="cerrarSesion(false)"
+        >
+          Cerrar Sesión
+        </button>
+      </div>
+    </navbar>
+
+    <div id="toast-container"></div>
+
+    <div class="main-container">
+      <!-- PORTADA DE ACCESO: clientes predeterminados, registro y administrador -->
+      <section id="seccion-login" class="ih-auth-layout" aria-label="Acceso a IRONHUB">
+        <div class="ih-auth-visual">
+          <div class="ih-photo-shade"></div>
+          <div class="ih-auth-visual-content">
+            <span class="ih-kicker"><span class="ih-live-dot"></span> TU GIMNASIO DIGITAL</span>
+            <h1>ENTRENA.<br><span>REGISTRA.</span><br>AVANZA.</h1>
+            <p>Planifica tus rutinas, descubre ejercicios y registra cada logro. Todo tu entrenamiento en un solo lugar.</p>
+            <div class="ih-feature-grid">
+              <div><strong>01</strong><span>Rutinas a tu medida</span></div>
+              <div><strong>02</strong><span>Biblioteca de ejercicios</span></div>
+              <div><strong>03</strong><span>Progreso y asistencias</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="ih-auth-panel">
+          <div class="ih-auth-panel-top"><img src="assets/logo-ironhub.svg" alt="" width="44" height="44"><div><span class="ih-panel-brand">IRON<span>HUB</span></span><small>FUERZA EN CADA PASO</small></div></div>
+          <div class="ih-auth-mode" role="group" aria-label="Tipo de acceso">
+            <button type="button" id="acceso-cliente" class="is-active" aria-pressed="true" onclick="mostrarAcceso('cliente')">Cliente</button>
+            <button type="button" id="acceso-admin" aria-pressed="false" onclick="mostrarAcceso('admin')">Administrador</button>
+          </div>
+
+          <div id="ih-vista-login">
+            <div class="ih-panel-heading"><p id="ih-tipo-acceso" class="ih-mini-title">ACCESO CLIENTES</p><h2 id="ih-login-titulo">¡Qué bueno verte de nuevo!</h2><p id="ih-login-descripcion">Ingresa a tu cuenta y continúa con tus objetivos.</p></div>
+            <form id="ih-login-form" onsubmit="event.preventDefault();login()">
+              <div class="form-group"><label for="email">Correo electrónico</label><input id="email" type="email" name="email" placeholder="tu@correo.com" maxlength="120" autocomplete="username" required></div>
+              <div class="form-group"><label for="password">Contraseña</label><div class="ih-password-wrap"><input id="password" type="password" name="password" placeholder="Tu contraseña" autocomplete="current-password" required><button type="button" class="ih-toggle-pass" data-target="password" aria-label="Mostrar contraseña">Ver</button></div></div>
+              <button class="btn ih-auth-submit" id="btn-login" type="submit">Iniciar sesión <span aria-hidden="true">→</span></button>
+            </form>
+            <p id="ih-register-link" class="ih-auth-switch">¿Aún no tienes cuenta? <button type="button" onclick="mostrarAcceso('registro')">Crear cuenta gratis</button></p>
+            <p id="ih-admin-note" class="ih-admin-note" hidden>El acceso administrativo requiere una cuenta previamente autorizada. No se crean administradores desde el registro público.</p>
+            <p class="ih-auth-help">¿No puedes acceder? Consulta con la administración del gimnasio.</p>
+          </div>
+
+          <div id="ih-vista-registro" hidden>
+            <div class="ih-panel-heading"><p class="ih-mini-title">NUEVA CUENTA DE CLIENTE</p><h2>Empieza hoy en IRONHUB</h2><p>Crea tu cuenta para guardar rutinas y llevar tu progreso.</p></div>
+            <form id="ih-registro-form" onsubmit="registrarse(event)">
+              <div class="ih-registro-nombres">
+                <div class="form-group"><label for="registro-nombre">Nombre</label><input id="registro-nombre" type="text" placeholder="Tu nombre" autocomplete="given-name" minlength="2" maxlength="60" required></div>
+                <div class="form-group"><label for="registro-apellido">Apellido</label><input id="registro-apellido" type="text" placeholder="Tu apellido" autocomplete="family-name" minlength="2" maxlength="60" required></div>
+              </div>
+              <div class="form-group"><label for="registro-email">Correo electrónico</label><input id="registro-email" type="email" placeholder="tu@correo.com" autocomplete="email" maxlength="120" required></div>
+              <div class="form-group"><label for="registro-telefono">Teléfono <span class="ih-optional">(opcional)</span></label><input id="registro-telefono" type="tel" autocomplete="tel" placeholder="Número de contacto" maxlength="20"></div>
+              <div class="form-group"><label for="registro-password">Contraseña</label><div class="ih-password-wrap"><input id="registro-password" type="password" placeholder="Mínimo 8 caracteres" minlength="8" maxlength="128" autocomplete="new-password" required><button type="button" class="ih-toggle-pass" data-target="registro-password" aria-label="Mostrar contraseña">Ver</button></div><small class="ih-field-hint">Debe contener al menos una letra y un número.</small></div>
+              <div class="form-group"><label for="registro-confirmar">Confirmar contraseña</label><div class="ih-password-wrap"><input id="registro-confirmar" type="password" minlength="8" maxlength="128" autocomplete="new-password" required placeholder="Repite tu contraseña"><button type="button" class="ih-toggle-pass" data-target="registro-confirmar" aria-label="Mostrar contraseña">Ver</button></div></div>
+              <button class="btn ih-auth-submit" type="submit" id="btn-registro">Crear mi cuenta <span aria-hidden="true">→</span></button>
+            </form>
+            <p class="ih-auth-switch">¿Ya tienes una cuenta? <button type="button" onclick="mostrarAcceso('cliente')">Iniciar sesión</button></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL CLIENTE -->
+      <div id="panel-cliente" class="card" style="display: none">
+        <h2
+          style="
+            font-family: &quot;Barlow Condensed&quot;;
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            color: var(--primary);
+          "
+        >
+          CENTRAL DE ENTRENAMIENTO
+        </h2>
+        <p style="color: var(--text-muted); margin-bottom: 25px">
+          Controla tus rutinas semanales, explora planes profesionales o arma tu
+          propio entrenamiento.
+        </p>
+
+        <div class="hero-ironhub">
+          <div class="hero-eyebrow">TU ESPACIO DE ENTRENAMIENTO</div>
+          <h2>ENTRENA CON PROPÓSITO.<br>SUPERA TUS LÍMITES.</h2>
+          <p>Organiza tus rutinas, aprende a ejecutar los ejercicios y sigue tus avances desde un solo lugar.</p>
+          <div class="hero-actions">
+            <button class="btn" onclick="cambiarPestana('tab-rutina')">Mi entrenamiento</button>
+            <button class="btn btn-secundario" onclick="cambiarPestana('tab-biblioteca')">Explorar ejercicios</button>
+          </div>
+        </div>
+        <div class="metric-grid" aria-label="Resumen de tu actividad">
+          <div class="metric"><span class="metric-label">Ejercicios disponibles</span><span class="metric-value" id="metrica-ejercicios">—</span></div>
+          <div class="metric"><span class="metric-label">Mis rutinas</span><span class="metric-value" id="metrica-planes">—</span></div>
+          <div class="metric"><span class="metric-label">Mis asistencias</span><span class="metric-value" id="metrica-asistencias">—</span></div>
+        </div>
+
+        <div class="nav-tabs">
+          <button
+            class="tab-btn active"
+            data-tab="tab-rutina"
+            onclick="switchTab('tab-rutina', this)"
+          >
+            📅 Rutina del Día
+          </button>
+          <button
+            class="tab-btn"
+            data-tab="tab-enfoques"
+            onclick="switchTab('tab-enfoques', this)"
+          >
+            🔥 Rutinas Especializadas
+          </button>
+          <button
+            class="tab-btn"
+            data-tab="tab-crear"
+            onclick="switchTab('tab-crear', this)"
+          >
+            🛠️ Plan Personalizado
+          </button>
+          <button
+            class="tab-btn"
+            data-tab="tab-asistencia"
+            onclick="switchTab('tab-asistencia', this)"
+          >
+            ✅ Control Asistencia
+          </button>
+          <button class="tab-btn" data-tab="tab-biblioteca" onclick="switchTab('tab-biblioteca',this)">Biblioteca de ejercicios</button>
+          <button class="tab-btn" data-tab="tab-propuestas" onclick="switchTab('tab-propuestas',this)">Proponer ejercicio</button>
+          <button class="tab-btn" data-tab="tab-progreso" onclick="switchTab('tab-progreso',this)">Mi progreso</button>
+          <button class="tab-btn" data-tab="tab-perfil" onclick="switchTab('tab-perfil',this)">Mi perfil</button>
+          <button class="tab-btn" data-tab="tab-avisos" onclick="switchTab('tab-avisos',this)">Avisos <span id="contador-avisos" class="contador-avisos" hidden>0</span></button>
+          <button class="tab-btn" id="tab-admin-boton" data-tab="tab-admin" onclick="switchTab('tab-admin',this)" hidden>Administración</button>
+        </div>
+
+        <!-- Pestaña 1: Rutina del Día -->
+        <div id="tab-rutina" class="section-view active">
+          <div class="form-group">
+            <label for="dia-semana">Selecciona el Día</label>
+            <select id="dia-semana" onchange="cambiarDia()">
+              <option value="1">1 - Lunes</option>
+              <option value="2">2 - Martes</option>
+              <option value="3">3 - Miércoles</option>
+              <option value="4">4 - Jueves</option>
+              <option value="5">5 - Viernes</option>
+              <option value="6">6 - Sábado</option>
+              <option value="7">7 - Domingo</option>
+            </select>
+          </div>
+          <button class="btn" onclick="cambiarDia()">
+            Actualizar Rutina del Día
+          </button>
+          <div
+            id="resultado-rutina"
+            class="resultado-box"
+            style="display: none"
+          ></div>
+        </div>
+
+        <!-- Pestaña 2: Rutinas Especializadas -->
+        <div id="tab-enfoques" class="section-view">
+          <div class="guia-semanal-box">
+            <h4
+              style="
+                color: var(--primary);
+                margin-bottom: 6px;
+                font-size: 1.05rem;
+              "
+            >
+              📊 Guía de Frecuencia y Volumen Semanal por Grupo Muscular:
+            </h4>
+            • <b>Pecho / Espalda:</b> 10 a 16 series semanales (divididas en 2
+            sesiones para optimizar síntesis proteica).<br />
+            • <b>Piernas / Glúteos:</b> 12 a 18 series semanales con alta
+            frecuencia (ideal 2 veces por semana).<br />
+            • <b>Hombros / Brazos:</b> 8 a 12 series semanales de trabajo
+            complementario e indirecto.
+          </div>
+          <p
+            style="
+              color: var(--text-muted);
+              margin-bottom: 15px;
+              font-size: 0.95rem;
+            "
+          >
+            Cada plan incluye su planificación semanal completa. Al pulsar
+            «Elegir Plan» se guarda automáticamente y reemplaza tu planificación
+            anterior de los 7 días:
+          </p>
+
+          <div id="lista-planes" class="grid-cards">
+            <div class="loading">Cargando planes especializados...</div>
+          </div>
+
+          <div
+            id="resultado-desglose-rutina"
+            class="resultado-box"
+            style="display: none"
+          ></div>
+        </div>
+
+        <!-- Pestaña 3: Plan Personalizado -->
+        <div id="tab-crear" class="section-view">
+          <h3
+            style="
+              margin-bottom: 8px;
+              font-size: 1.25rem;
+              color: var(--success);
+            "
+          >
+            Catálogo Completo y Creación de Rutina Personalizada
+          </h3>
+          <p
+            style="
+              color: var(--text-muted);
+              margin-bottom: 20px;
+              font-size: 0.92rem;
+            "
+          >
+            Marca los ejercicios del catálogo, ajusta sus series y repeticiones,
+            asígnale un nombre y guarda el plan en el día que quieras entrenarlo.
+          </p>
+
+          <div class="form-group">
+            <label for="nombre-personalizada"
+              >Nombre de tu Rutina Personalizada</label
+            >
+            <input
+              type="text"
+              id="nombre-personalizada"
+              maxlength="100"
+              placeholder="Ej: Rutina de fuerza – Lunes"
+            />
+          </div>
+
+          <div class="toolbar-ejercicios">
+            <input type="search" id="buscar-catalogo-plan" placeholder="Buscar ejercicio para tu rutina..." aria-label="Buscar ejercicios para plan" />
+            <span id="catalogo-plan-contador" class="contador-catalogo">50 ejercicios</span>
+          </div>
+          <div
+            id="catalogo-por-grupos-container"
+            style="
+              max-height: 420px;
+              overflow-y: auto;
+              margin-bottom: 20px;
+              padding-right: 5px;
+            "
+          >
+            <!-- Se carga dinámicamente -->
+          </div>
+
+          <button
+            class="btn btn-success"
+            onclick="guardarRutinaPersonalizada()"
+          >
+            Guardar Rutina en la Base de Datos
+          </button>
+
+          <h3
+            style="
+              margin: 32px 0 8px;
+              font-size: 1.25rem;
+              color: var(--primary);
+            "
+          >
+            📁 Mis Rutinas Personalizadas
+          </h3>
+          <p
+            style="
+              color: var(--text-muted);
+              margin-bottom: 16px;
+              font-size: 0.9rem;
+            "
+          >
+            Aquí aparecen todos los planes que has guardado. Puedes editarlos o
+            eliminarlos en cualquier momento.
+          </p>
+          <div id="lista-mis-rutinas">
+            <div class="loading">Cargando tus rutinas...</div>
+          </div>
+        </div>
+
+        <!-- Pestaña 4: Asistencia -->
+        <div
+          id="tab-asistencia"
+          class="section-view"
+          style="text-align: center; padding: 30px 0"
+        >
+          <h3 style="margin-bottom: 8px; font-size: 1.4rem">
+            Registro de Acceso Diario
+          </h3>
+          <p style="color: var(--text-muted); margin-bottom: 30px">
+            Registra tu ingreso al gimnasio con fecha y hora exacta.
+          </p>
+          <button
+            class="btn btn-success"
+            style="max-width: 320px; margin: 0 auto; padding: 18px"
+            onclick="registrarAsistencia()"
+          >
+            ✅ Registrar Mi Ingreso de Hoy
+          </button>
+          <div id="historial-asistencias" style="text-align:left;margin:24px auto;max-width:650px"></div>
+        </div>
+
+        <!-- Pestaña 5: Biblioteca visual -->
+        <section id="tab-biblioteca" class="section-view">
+          <h3 class="seccion-pro-titulo">Biblioteca de ejercicios</h3>
+          <p class="mini-note">Explora los movimientos, revisa las fotografías y guarda tus favoritos. La guía se abre al seleccionar «Ver técnica».</p>
+          <div class="toolbar-ejercicios">
+            <input type="search" id="biblioteca-buscar" placeholder="Buscar por nombre o músculo..." aria-label="Buscar en biblioteca" />
+            <select id="biblioteca-grupo" aria-label="Filtrar por grupo muscular" style="flex:0 1 210px"></select>
+            <label class="filtro-favoritos" for="biblioteca-favoritos"><input id="biblioteca-favoritos" type="checkbox"/> Solo favoritos</label>
+            <span id="biblioteca-contador" class="contador-catalogo"></span>
+          </div>
+          <div class="grid-cards biblioteca-grid" id="biblioteca-lista"></div>
+        </section>
+
+        <!-- Pestaña 6: Propuestas de nuevos ejercicios -->
+        <section id="tab-propuestas" class="section-view">
+          <h3 class="seccion-pro-titulo">Propón un ejercicio nuevo</h3>
+          <p class="mini-note">Comparte una demostración propia con nombre, descripción y archivo. Un administrador verificará tu propuesta antes de incluirla en el catálogo.</p>
+          <div class="tab-propuestas-layout">
+            <div class="panel-pro">
+              <h3>Enviar propuesta</h3>
+              <p>Describe cómo se realiza el movimiento, equipo utilizado y cuidados básicos. Solo adjunta material propio o que tengas permiso de publicar.</p>
+              <form id="form-propuesta">
+                <div class="form-group"><label for="propuesta-nombre">Nombre del ejercicio</label>
+                  <input id="propuesta-nombre" name="nombre" required minlength="3" maxlength="100" placeholder="Ej.: Remo con banda elástica"></div>
+                <div class="form-group"><label for="propuesta-grupo">Grupo muscular principal</label>
+                  <select id="propuesta-grupo" name="id_grupo" required></select></div>
+                <div class="form-group"><label for="propuesta-descripcion">Descripción y técnica</label>
+                  <textarea id="propuesta-descripcion" name="descripcion" required minlength="15" maxlength="1500" rows="5" placeholder="Posición inicial, movimiento, repeticiones sugeridas y recomendaciones..."></textarea></div>
+                <div class="form-group"><label for="propuesta-archivo">Foto o video</label>
+                  <input id="propuesta-archivo" name="archivo" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" required>
+                  <p class="mini-note">Admitidos: JPG, PNG, WEBP, MP4 o WEBM. Tamaño máximo: 25 MB.</p>
+                  <div id="propuesta-preview-local"></div></div>
+                <button class="btn" type="submit" id="enviar-propuesta">Enviar propuesta para revisión</button>
+              </form>
+            </div>
+            <div class="panel-pro"><h3>Mis propuestas</h3>
+              <p>Consulta el estado de tus ideas enviadas.</p>
+              <div id="lista-propuestas"><div class="empty-state">Abre esta sección para consultar el historial.</div></div>
+            </div>
+          </div>
+          <div class="panel-pro" id="panel-moderacion" style="margin-top:20px" hidden>
+            <h3>Moderación de ejercicios</h3><p>Solo administradores: revisa el material antes de aceptarlo. Las propuestas aprobadas se incorporan al catálogo de ejercicios.</p>
+            <div id="lista-pendientes"></div>
+          </div>
+        </section>
+        <!-- IRONHUB 3.1: seguimiento físico -->
+        <section id="tab-progreso" class="section-view">
+          <div class="section-pro-header"><h3 class="seccion-pro-titulo">Registro de entrenamientos</h3><p>Guarda lo que realmente entrenaste, consulta tu evolución y revisa tus cargas.</p></div>
+          <div class="metric-grid metric-grid-progreso">
+            <div class="metric"><span class="metric-label">Sesiones completadas</span><span id="metrica-sesiones" class="metric-value">0</span></div>
+            <div class="metric"><span class="metric-label">Esta semana</span><span id="metrica-semana" class="metric-value">0</span></div>
+            <div class="metric"><span class="metric-label">Último entrenamiento</span><span id="metrica-ultima" class="metric-value metric-fecha">—</span></div>
+          </div>
+          <div class="tab-propuestas-layout">
+            <div class="panel-pro">
+              <h3>Registrar una sesión</h3>
+              <p>Selecciona ejercicios, indica series, repeticiones y peso utilizado (opcional).</p>
+              <form id="form-entrenamiento">
+                <div class="form-group"><label for="entrenamiento-dia">Día</label><select id="entrenamiento-dia" required>
+                  <option value="1">Lunes</option><option value="2">Martes</option><option value="3">Miércoles</option>
+                  <option value="4">Jueves</option><option value="5">Viernes</option><option value="6">Sábado</option><option value="7">Domingo</option>
+                </select></div>
+                <div id="filas-entrenamiento" class="filas-entrenamiento"></div>
+                <div class="form-acciones"><button class="btn-mini" type="button" id="agregar-fila-entreno">+ Añadir ejercicio</button>
+                <button class="btn-mini" type="button" id="cargar-entreno-dia">Usar rutina del día</button></div>
+                <div class="form-group"><label for="entrenamiento-notas">Notas de la sesión (opcional)</label>
+                  <textarea id="entrenamiento-notas" rows="3" maxlength="255" placeholder="Por ejemplo: progresé en la última serie…"></textarea></div>
+                <button class="btn" type="submit" id="guardar-entrenamiento">Guardar entrenamiento completado</button>
+              </form>
+            </div>
+            <div class="panel-pro"><h3>Mi historial</h3><p>Últimas sesiones registradas, con los ejercicios y las cargas.</p>
+              <div id="lista-entrenamientos" aria-live="polite"><div class="empty-state">Todavía no tienes sesiones guardadas.</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-perfil" class="section-view">
+          <div class="section-pro-header"><h3 class="seccion-pro-titulo">Mi perfil</h3><p>Actualiza tu información de contacto y protege tu cuenta.</p></div>
+          <div class="tab-propuestas-layout">
+            <form id="form-perfil" class="panel-pro">
+              <h3>Datos personales</h3>
+              <div class="perfil-dos-columnas">
+                <div class="form-group"><label for="perfil-nombre">Nombre</label><input id="perfil-nombre" minlength="2" maxlength="60" required></div>
+                <div class="form-group"><label for="perfil-apellido">Apellido</label><input id="perfil-apellido" minlength="2" maxlength="60" required></div>
+              </div>
+              <div class="form-group"><label for="perfil-email">Correo electrónico</label><input id="perfil-email" type="email" maxlength="120" required></div>
+              <div class="form-group"><label for="perfil-telefono">Teléfono</label><input id="perfil-telefono" type="tel" maxlength="20"></div>
+              <button class="btn" id="guardar-perfil" type="submit">Guardar datos personales</button>
+            </form>
+            <form id="form-contrasena" class="panel-pro">
+              <h3>Seguridad de la cuenta</h3>
+              <p>Usa una contraseña distinta a la de tus otras aplicaciones.</p>
+              <div class="form-group"><label for="clave-actual">Contraseña actual</label><input type="password" id="clave-actual" autocomplete="current-password" required></div>
+              <div class="form-group"><label for="clave-nueva">Nueva contraseña (mínimo 8 caracteres)</label><input type="password" id="clave-nueva" minlength="8" maxlength="128" autocomplete="new-password" required></div>
+              <div class="form-group"><label for="clave-confirmacion">Confirmar nueva contraseña</label><input type="password" id="clave-confirmacion" minlength="8" maxlength="128" autocomplete="new-password" required></div>
+              <button class="btn btn-secundario" id="guardar-clave" type="submit">Cambiar contraseña</button>
+            </form>
+          </div>
+        </section>
+
+        <section id="tab-avisos" class="section-view">
+          <div class="section-pro-header"><h3 class="seccion-pro-titulo">Centro de notificaciones</h3><p>Consulta las decisiones sobre los ejercicios que has propuesto.</p></div>
+          <div id="lista-notificaciones" class="avisos-lista"><div class="empty-state">No tienes notificaciones.</div></div>
+        </section>
+
+        <section id="tab-admin" class="section-view" aria-label="Panel administrativo">
+          <div class="section-pro-header"><h3 class="seccion-pro-titulo">Panel de administración</h3><p>Información operativa y herramientas disponibles solo para administradores.</p></div>
+          <div class="metric-grid admin-metricas">
+            <div class="metric"><span class="metric-label">Clientes</span><span class="metric-value" id="admin-total-clientes">—</span></div>
+            <div class="metric"><span class="metric-label">Propuestas pendientes</span><span class="metric-value" id="admin-total-propuestas">—</span></div>
+            <div class="metric"><span class="metric-label">Entrenamientos</span><span class="metric-value" id="admin-total-entrenos">—</span></div>
+          </div>
+          <div class="panel-pro panel-admin-section"><div class="admin-cabecera"><div><h3>Propuestas por revisar</h3><p>Abre una foto o video antes de tomar una decisión.</p></div>
+            <button class="btn-mini" type="button" id="admin-actualizar">Actualizar datos</button></div>
+            <div id="admin-pendientes" class="admin-pendientes"></div></div>
+          <div class="tab-propuestas-layout admin-grillas">
+            <div class="panel-pro"><h3>Gestión de clientes</h3><p>Activa o desactiva el acceso de cuentas cliente.</p>
+              <div class="toolbar-ejercicios"><input type="search" id="admin-buscar-cliente" placeholder="Buscar por nombre o correo" aria-label="Buscar cliente"></div>
+              <div id="admin-usuarios" class="admin-usuarios"></div>
+            </div>
+            <div class="panel-pro"><h3>Catálogo del gimnasio</h3><p>Registra un ejercicio nuevo o edita su descripción y grupo muscular.</p>
+              <form id="admin-form-ejercicio">
+                <div class="form-group"><label for="admin-ejercicio-existente">Editar existente (opcional)</label><select id="admin-ejercicio-existente"><option value="">Crear ejercicio nuevo</option></select></div>
+                <div class="form-group"><label for="admin-ejercicio-nombre">Nombre</label><input id="admin-ejercicio-nombre" maxlength="100" minlength="3" required></div>
+                <div class="form-group"><label for="admin-ejercicio-grupo">Grupo muscular</label><select id="admin-ejercicio-grupo" required></select></div>
+                <div class="form-group"><label for="admin-ejercicio-descripcion">Descripción</label><textarea id="admin-ejercicio-descripcion" rows="3" maxlength="255"></textarea></div>
+                <button class="btn" id="admin-guardar-ejercicio" type="submit">Guardar ejercicio</button>
+              </form>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- ==================== MODAL: SELECTOR DE DÍA ==================== -->
+    <div id="modal-dia" class="modal-overlay" role="dialog" aria-modal="true">
+      <div class="modal">
+        <div class="modal-cabecera">
+          <h3 id="modal-dia-titulo">¿Qué día vas a entrenar?</h3>
+          <button
+            class="modal-cerrar"
+            aria-label="Cerrar"
+            onclick="cerrarModal('modal-dia')"
+          >
+            ×
+          </button>
+        </div>
+        <p id="modal-dia-subtitulo" class="modal-subtitulo"></p>
+        <div id="modal-dia-opciones" class="dias-grid"></div>
+      </div>
+    </div>
+
+    <!-- ==================== MODAL: CONFIRMACIÓN ==================== -->
+    <div
+      id="modal-confirmar"
+      class="modal-overlay"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal" style="max-width: 440px">
+        <div class="modal-cabecera">
+          <h3>Confirmar acción</h3>
+          <button
+            class="modal-cerrar"
+            aria-label="Cerrar"
+            onclick="responderConfirmacion(false)"
+          >
+            ×
+          </button>
+        </div>
+        <p id="modal-confirmar-mensaje" class="modal-subtitulo"></p>
+        <div class="modal-acciones">
+          <button
+            class="btn btn-secundario"
+            onclick="responderConfirmacion(false)"
+          >
+            Cancelar
+          </button>
+          <button
+            class="btn btn-peligro"
+            id="modal-confirmar-btn"
+            onclick="responderConfirmacion(true)"
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== MODAL: EDITAR PLAN ==================== -->
+    <div id="modal-editar" class="modal-overlay" role="dialog" aria-modal="true">
+      <div class="modal ancho">
+        <div class="modal-cabecera">
+          <h3>Editar Plan Personalizado</h3>
+          <button
+            class="modal-cerrar"
+            aria-label="Cerrar"
+            onclick="cerrarModal('modal-editar')"
+          >
+            ×
+          </button>
+        </div>
+        <p class="modal-subtitulo">
+          Modifica el nombre, el día y los ejercicios. Los cambios se guardan en
+          la base de datos.
+        </p>
+
+        <div class="form-group">
+          <label for="edit-nombre">Nombre de la rutina</label>
+          <input type="text" id="edit-nombre" maxlength="100" />
+        </div>
+
+        <div class="form-group">
+          <label for="edit-dia">Día de la semana</label>
+          <select id="edit-dia"></select>
+        </div>
+
+        <div class="form-group">
+          <label>Ejercicios del plan (series × repeticiones)</label>
+          <div id="edit-ejercicios"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-agregar">Agregar un ejercicio</label>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap">
+            <select id="edit-agregar" style="flex: 1; min-width: 200px"></select>
+            <button
+              class="btn btn-info"
+              style="width: auto; margin: 0; padding: 12px 18px; font-size: 0.9rem"
+              onclick="agregarEjercicioEdicion()"
+            >
+              + Agregar
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-acciones">
+          <button
+            class="btn btn-secundario"
+            onclick="cerrarModal('modal-editar')"
+          >
+            Cancelar
+          </button>
+          <button class="btn btn-success" onclick="guardarEdicion()">
+            Guardar Cambios
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== MODAL: DEMOSTRACIÓN DE EJERCICIO ==================== -->
+    <div
+      id="modal-ejercicio"
+      class="modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-ejercicio-titulo"
+    >
+      <div class="modal ancho">
+        <div class="modal-cabecera">
+          <h3 id="modal-ejercicio-titulo">Ejercicio</h3>
+          <button
+            class="modal-cerrar"
+            aria-label="Cerrar demostración"
+            onclick="cerrarDemoEjercicio()"
+          >
+            ×
+          </button>
+        </div>
+        <p id="modal-ejercicio-meta" class="modal-subtitulo"></p>
+        <p id="modal-ejercicio-resumen" class="demo-resumen"></p>
+
+        <div id="modal-ejercicio-galeria" class="demo-galeria"></div>
+        <p class="demo-aviso">
+          Si las imágenes no cargan, usa la búsqueda de video. Cerrar esta
+          ventana no modifica tu rutina ni tu progreso.
+        </p>
+
+        <div class="demo-guia">
+          <section>
+            <h4>Instrucciones paso a paso</h4>
+            <ol id="modal-ejercicio-pasos"></ol>
+          </section>
+          <section>
+            <h4>Recomendaciones técnicas</h4>
+            <ul id="modal-ejercicio-consejos"></ul>
+          </section>
+        </div>
+
+        <div class="modal-acciones">
+          <a
+            id="modal-ejercicio-video"
+            class="btn btn-info"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            🔎 Buscar video demostrativo
+          </a>
+          <button
+            class="btn btn-secundario"
+            type="button"
+            onclick="cerrarDemoEjercicio()"
+          >
+            Volver a rutina del día
+          </button>
+        </div>
+        <p class="demo-credito">
+          Imágenes de demostración: Free Exercise DB (Unlicense / dominio
+          público).
+        </p>
+      </div>
+    </div>
+
+    <button id="boton-ayuda" class="ayuda-flotante" aria-expanded="false" aria-controls="ayuda-panel">¿Necesitas ayuda?</button>
+    <aside id="ayuda-panel" class="ayuda-panel" hidden aria-label="Centro de ayuda">
+      <button class="modal-cerrar" id="ayuda-cerrar" style="float:right" aria-label="Cerrar ayuda">×</button>
+      <h3>Centro de ayuda</h3>
+      <p class="mini-note">Resuelve dudas rápidas sobre el funcionamiento de IRONHUB.</p>
+      <details><summary>¿Cómo elijo una rutina?</summary><p>En «Rutinas Especializadas», abre un plan y elige «Guardar». Tu semana quedará configurada con sus días de entrenamiento y descanso.</p></details>
+      <details><summary>¿Cómo creo mi rutina?</summary><p>En «Plan Personalizado», escribe un nombre, marca ejercicios, configura series y repeticiones y elige un día para guardar.</p></details>
+      <details><summary>¿Dónde veo fotos y técnica?</summary><p>En «Biblioteca de ejercicios» pulsa «Ver técnica». Las fotos locales aparecen si ejecutaste el descargador; de lo contrario se intentará cargar desde Free Exercise DB.</p></details>
+      <details><summary>¿Cómo propongo un ejercicio?</summary><p>En «Proponer ejercicio», completa nombre, grupo muscular, descripción y adjunta una foto o video. Tu envío queda pendiente hasta que un administrador lo apruebe.</p></details>
+      <details><summary>¿Cómo registro mi asistencia?</summary><p>Usa «Control Asistencia». Solo se admite un registro por día. Puedes ver tu historial allí mismo.</p></details>
+      <button class="btn" onclick="abrirAyuda(); if(usuarioActual) cambiarPestana('tab-propuestas')">Ir a proponer ejercicio</button>
+    </aside>
+    <script src="ejercicios_demo.js" charset="UTF-8"></script>
+    <script src="mejoras.js" charset="UTF-8"></script>
+    <script>
+      const API_BASE = "http://127.0.0.1:5050/api";
+      const DIAS = [
+        { n: 1, nombre: "Lunes" },
+        { n: 2, nombre: "Martes" },
+        { n: 3, nombre: "Miércoles" },
+        { n: 4, nombre: "Jueves" },
+        { n: 5, nombre: "Viernes" },
+        { n: 6, nombre: "Sábado" },
+        { n: 7, nombre: "Domingo" },
+      ];
+      const $ = (id) => document.getElementById(id);
+      const esc = (valor) =>
+        String(valor === null || valor === undefined ? "" : valor).replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+
+      let token = localStorage.getItem("ironhub_token");
+      let usuarioActual = null;
+      try {
+        usuarioActual = JSON.parse(
+          localStorage.getItem("ironhub_usuario") || "null",
+        );
+      } catch (e) {
+        usuarioActual = null;
+      }
+
+      let catalogoEjercicios = [];
+      let planesEspecializados = [];
+      let misRutinas = [];
+      let ultimoDia = null;
+      let diaActual = 1;
+      let accionDia = null;
+      let rutinaEnEdicion = null;
+      let resolverConfirmacion = null;
+      let botonEjercicioActivo = null;
+
+      // ------------------------------------------------------------------
+      // Utilidades generales
+      // ------------------------------------------------------------------
+      function mostrarToast(mensaje, tipo = "success") {
+        const contenedor = $("toast-container");
+        const toast = document.createElement("div");
+        toast.className = "toast " + tipo;
+        const icono = document.createElement("span");
+        icono.textContent = tipo === "success" ? "✔" : "⚠";
+        const texto = document.createElement("span");
+        texto.textContent = mensaje;
+        toast.appendChild(icono);
+        toast.appendChild(texto);
+        contenedor.appendChild(toast);
+        setTimeout(() => toast.remove(), 4200);
+      }
+
+      async function apiFetch(ruta, opciones = {}) {
+        const headers = Object.assign({}, opciones.headers);
+        if (opciones.body !== undefined && !(opciones.body instanceof FormData)) {
+          headers["Content-Type"] = "application/json";
+        }
+        if (token) {
+          headers["Authorization"] = "Bearer " + token;
+        }
+
+        let respuesta;
+        try {
+          respuesta = await fetch(
+            API_BASE + ruta,
+            Object.assign({}, opciones, { headers }),
+          );
+        } catch (e) {
+          throw new Error(
+            "No se pudo conectar con el servidor. Verifica que el backend esté en ejecución.",
+          );
+        }
+
+        const texto = await respuesta.text();
+        let datos = null;
+        if (texto) {
+          try {
+            datos = JSON.parse(texto);
+          } catch (e) {
+            datos = null;
+          }
+        }
+
+        if (respuesta.status === 401 && !["/auth/login", "/auth/registro"].includes(ruta)) {
+          cerrarSesion(true);
+          throw new Error(
+            (datos && datos.error) ||
+              "Tu sesión expiró. Vuelve a iniciar sesión.",
+          );
+        }
+        if (!respuesta.ok) {
+          throw new Error(
+            (datos && datos.error) ||
+              "Ocurrió un error al procesar la solicitud.",
+          );
+        }
+        return datos;
+      }
+
+      function abrirModal(id) {
+        $(id).classList.add("visible");
+      }
+
+      function cerrarModal(id) {
+        $(id).classList.remove("visible");
+      }
+
+      function confirmar(mensaje, textoBoton) {
+        return new Promise((resolve) => {
+          resolverConfirmacion = resolve;
+          $("modal-confirmar-mensaje").textContent = mensaje;
+          $("modal-confirmar-btn").textContent = textoBoton || "Eliminar";
+          abrirModal("modal-confirmar");
+        });
+      }
+
+      function responderConfirmacion(valor) {
+        cerrarModal("modal-confirmar");
+        const resolver = resolverConfirmacion;
+        resolverConfirmacion = null;
+        if (resolver) resolver(valor);
+      }
+
+      function abrirSelectorDia({ titulo, subtitulo, onSelect }) {
+        accionDia = onSelect;
+        $("modal-dia-titulo").textContent = titulo;
+        $("modal-dia-subtitulo").textContent = subtitulo;
+        const contenedor = $("modal-dia-opciones");
+        contenedor.innerHTML = DIAS.map(
+          (d) => `
+            <button class="dia-opcion" data-dia="${d.n}">
+              <span class="num">${d.n}</span>${d.nombre}
+            </button>`,
+        ).join("");
+
+        contenedor.querySelectorAll(".dia-opcion").forEach((boton) => {
+          boton.addEventListener("click", async () => {
+            const dia = Number(boton.dataset.dia);
+            cerrarModal("modal-dia");
+            try {
+              await accionDia(dia);
+            } catch (error) {
+              mostrarToast(error.message, "error");
+            }
+          });
+        });
+
+        abrirModal("modal-dia");
+      }
+
+      function irARutinaDia(dia, cargar = true) {
+        diaActual = dia;
+        $("dia-semana").value = String(dia);
+        switchTab(
+          "tab-rutina",
+          document.querySelector('.tab-btn[data-tab="tab-rutina"]'),
+        );
+        if (cargar) cargarRutinaDelDia();
+      }
+
+      // ------------------------------------------------------------------
+      // Sesión, selector de rol y creación de cuentas de clientes
+      // ------------------------------------------------------------------
+      let modoAcceso = "cliente";
+
+      function mostrarAcceso(modo) {
+        if (!['cliente', 'admin', 'registro'].includes(modo)) return;
+        modoAcceso = modo === 'admin' ? 'admin' : 'cliente';
+        const esRegistro = modo === 'registro';
+        $("ih-vista-login").hidden = esRegistro;
+        $("ih-vista-registro").hidden = !esRegistro;
+        $("acceso-cliente").classList.toggle('is-active', modoAcceso === 'cliente');
+        $("acceso-admin").classList.toggle('is-active', modoAcceso === 'admin');
+        $("acceso-cliente").setAttribute('aria-pressed', String(modoAcceso === 'cliente'));
+        $("acceso-admin").setAttribute('aria-pressed', String(modoAcceso === 'admin'));
+        $("ih-tipo-acceso").textContent = modoAcceso === 'admin' ? 'ACCESO ADMINISTRATIVO' : 'ACCESO CLIENTES';
+        $("ih-login-titulo").textContent = modoAcceso === 'admin' ? 'Panel de administración' : '¡Qué bueno verte de nuevo!';
+        $("ih-login-descripcion").textContent = modoAcceso === 'admin'
+          ? 'Ingresa con tu cuenta autorizada para gestionar el gimnasio.'
+          : 'Ingresa a tu cuenta y continúa con tus objetivos.';
+        $("ih-register-link").hidden = modoAcceso === 'admin';
+        $("ih-admin-note").hidden = modoAcceso !== 'admin';
+        $("nav-acceso-admin").classList.toggle('is-selected', modoAcceso === 'admin');
+        if (modo === 'registro') $("registro-nombre").focus();
+        else if (!token) $("email").focus();
+      }
+
+      async function registrarse(evento) {
+        evento.preventDefault();
+        const nombre = $("registro-nombre").value.trim();
+        const apellido = $("registro-apellido").value.trim();
+        const email = $("registro-email").value.trim().toLowerCase();
+        const telefono = $("registro-telefono").value.trim();
+        const password = $("registro-password").value;
+        const confirmar = $("registro-confirmar").value;
+        if (nombre.length < 2 || apellido.length < 2) {
+          mostrarToast('Escribe tu nombre y apellido completos.', 'error'); return;
+        }
+        if (password !== confirmar) {
+          mostrarToast('Las contraseñas no coinciden.', 'error'); return;
+        }
+        if (password.length < 8 || password.length > 128 || !/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/.test(password) || !/[0-9]/.test(password)) {
+          mostrarToast('La contraseña debe tener mínimo 8 caracteres, una letra y un número.', 'error'); return;
+        }
+        const boton = $("btn-registro");
+        boton.disabled = true;
+        const original = boton.innerHTML;
+        boton.textContent = 'Creando cuenta...';
+        try {
+          await apiFetch('/auth/registro', {
+            method: 'POST',
+            body: JSON.stringify({ nombre, apellido, email, telefono, password })
+          });
+          $("ih-registro-form").reset();
+          mostrarAcceso('cliente');
+          $("email").value = email;
+          $("password").value = '';
+          mostrarToast('¡Cuenta creada! Ya puedes iniciar sesión.', 'success');
+        } catch (error) {
+          mostrarToast(error.message, 'error');
+        } finally {
+          boton.disabled = false;
+          boton.innerHTML = original;
+        }
+      }
+
+      async function login() {
+        const boton = $("btn-login");
+        const email = $("email").value.trim();
+        const password = $("password").value;
+
+        if (!email || !password) {
+          mostrarToast("Ingresa tu correo y tu contraseña.", "error");
+          return;
+        }
+
+        const textoOriginal = boton.textContent;
+        boton.disabled = true;
+        boton.textContent = "Verificando...";
+
+        try {
+          const datos = await apiFetch("/auth/login", {
+            method: "POST",
+            body: JSON.stringify({ email: email, password: password }),
+          });
+          const rolRecibido = Number(datos.usuario?.id_rol);
+          if ((modoAcceso === "admin" && rolRecibido !== 1) || (modoAcceso !== "admin" && rolRecibido !== 2)) {
+            throw new Error(modoAcceso === "admin"
+              ? "Esta cuenta no tiene permisos de administrador. Usa el acceso de clientes."
+              : "Esta es una cuenta administrativa. Utiliza el acceso de administrador.");
+          }
+          token = datos.token;
+          usuarioActual = datos.usuario;
+          localStorage.setItem("ironhub_token", token);
+          localStorage.setItem("ironhub_usuario", JSON.stringify(usuarioActual));
+          await entrarAlPanel();
+          if (rolRecibido === 1) {
+            switchTab("tab-admin", document.querySelector('[data-tab="tab-admin"]'));
+          }
+          mostrarToast(`¡Bienvenido, ${usuarioActual.nombre}!`, "success");
+        } catch (error) {
+          mostrarToast(error.message, "error");
+        } finally {
+          boton.disabled = false;
+          boton.textContent = textoOriginal;
+        }
+      }
+
+      async function entrarAlPanel() {
+        $("seccion-login").style.display = "none";
+        $("panel-cliente").style.display = "grid";
+        document.body.classList.remove("ih-auth-active");
+        document.body.classList.toggle("ih-admin-session", Number(usuarioActual?.id_rol) === 1);
+        $("nav-acceso-admin").hidden = true;
+        $("btn-logout").style.display = "block";
+
+        const badge = $("user-info-badge");
+        badge.style.display = "flex";
+        badge.textContent = "";
+        const rayo = document.createElement("span");
+        rayo.textContent = "⚡";
+        const nombre = document.createElement("span");
+        nombre.textContent = `${usuarioActual.nombre} ${usuarioActual.apellido || ""}`.trim();
+        badge.appendChild(rayo);
+        badge.appendChild(nombre);
+
+        const diaHoy = new Date().getDay();
+        irARutinaDia(diaHoy === 0 ? 7 : diaHoy, false);
+
+        await cargarMediosAprobados().catch((e) => mostrarToast('Para las propuestas nuevas ejecuta la migración SQL: '+e.message, 'error'));
+        await cargarCatalogo().catch((e) => mostrarToast(e.message, "error"));
+        renderBiblioteca();
+        await cargarPlanes().catch((e) => mostrarToast(e.message, "error"));
+        await cargarMisRutinas().catch((e) => mostrarToast(e.message, "error"));
+        await cargarRutinaDelDia();
+        await actualizarMetricas();
+      }
+
+      function cerrarSesion(silencioso) {
+        token = null;
+        usuarioActual = null;
+        catalogoEjercicios = [];
+        planesEspecializados = [];
+        misRutinas = [];
+        ultimoDia = null;
+        rutinaEnEdicion = null;
+        mediosAprobados = new Map();
+        localStorage.removeItem("ironhub_token");
+        localStorage.removeItem("ironhub_usuario");
+
+        $("panel-cliente").style.display = "none";
+        $("user-info-badge").style.display = "none";
+        $("btn-logout").style.display = "none";
+        $("seccion-login").style.display = "grid";
+        $("password").value = "";
+        document.body.classList.add("ih-auth-active");
+        document.body.classList.remove("ih-admin-session");
+        $("nav-acceso-admin").hidden = false;
+        mostrarAcceso("cliente");
+        $("resultado-rutina").style.display = "none";
+        $("resultado-desglose-rutina").style.display = "none";
+        $("lista-planes").innerHTML = "";
+        $("lista-mis-rutinas").innerHTML = "";
+        $("catalogo-por-grupos-container").innerHTML = "";
+
+        cerrarModal("modal-dia");
+        cerrarModal("modal-editar");
+        cerrarModal("modal-confirmar");
+        if (resolverConfirmacion) {
+          const resolver = resolverConfirmacion;
+          resolverConfirmacion = null;
+          resolver(false);
+        }
+
+        if (!silencioso) {
+          mostrarToast("Sesión cerrada correctamente.", "success");
+        }
+      }
+
+      function switchTab(tabId, btnElement) {
+        document
+          .querySelectorAll(".section-view")
+          .forEach((el) => el.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((el) => el.classList.remove("active"));
+        $(tabId).classList.add("active");
+        if (btnElement) btnElement.classList.add("active");
+        if (tabId === 'tab-propuestas' && token) {
+          cargarMisPropuestas();
+          if (Number(usuarioActual?.id_rol) === 1) cargarPendientes();
+        }
+        if (tabId === 'tab-biblioteca') renderBiblioteca();
+        if (tabId === 'tab-asistencia' && token) actualizarMetricas();
+      }
+
+      // ------------------------------------------------------------------
+      // Catálogo de ejercicios
+      // ------------------------------------------------------------------
+      async function cargarCatalogo() {
+        const datos = await apiFetch("/ejercicios");
+        catalogoEjercicios = datos;
+
+        const grupos = new Map();
+        datos.forEach((ej) => {
+          const grupo = ej.grupo_muscular || "General";
+          if (!grupos.has(grupo)) grupos.set(grupo, []);
+          grupos.get(grupo).push(ej);
+        });
+
+        let html = "";
+        for (const [grupo, lista] of grupos) {
+          html += `<div class="grupo-grupo-container">
+            <div class="grupo-titulo">🏋️‍♂️ ${esc(grupo)}</div>`;
+          lista.forEach((ej) => {
+            html += `
+              <div class="ejercicio-item">
+                ${miniaturaHtml(ej)}
+                <label class="chk-wrap">
+                  <input type="checkbox" class="chk-ejercicio" value="${ej.id_ejercicio}">
+                  <span><b>${esc(ej.nombre)}</b><span class="muted"> — ${esc(ej.descripcion || "Sin descripción")}</span></span>
+                </label>
+                <div class="series-reps" title="Series × Repeticiones">
+                  <input type="number" class="num-input serie-ej" value="4" min="1" max="99" aria-label="Series">
+                  <span>×</span>
+                  <input type="number" class="num-input rep-ej" value="10" min="1" max="99" aria-label="Repeticiones">
+                </div>
+              </div>`;
+          });
+          html += `</div>`;
+        }
+
+        const contenedor = $("catalogo-por-grupos-container");
+        contenedor.innerHTML = html;
+        filtrarCatalogoPlan();
+        renderBiblioteca();
+        contenedor.querySelectorAll(".chk-ejercicio").forEach((chk) => {
+          chk.addEventListener("change", () => {
+            chk.closest(".ejercicio-item").classList.toggle(
+              "seleccionado",
+              chk.checked,
+            );
+          });
+        });
+      }
+
+      function leerEjerciciosSeleccionados() {
+        const marcados = document.querySelectorAll(
+          "#catalogo-por-grupos-container .chk-ejercicio:checked",
+        );
+        const ejercicios = [];
+
+        for (const chk of marcados) {
+          const fila = chk.closest(".ejercicio-item");
+          const series = Number(fila.querySelector(".serie-ej").value);
+          const repeticiones = Number(fila.querySelector(".rep-ej").value);
+
+          if (!Number.isInteger(series) || series < 1 || series > 99) {
+            return { error: "Las series deben ser un número entre 1 y 99." };
+          }
+          if (
+            !Number.isInteger(repeticiones) ||
+            repeticiones < 1 ||
+            repeticiones > 99
+          ) {
+            return {
+              error: "Las repeticiones deben ser un número entre 1 y 99.",
+            };
+          }
+
+          ejercicios.push({
+            id_ejercicio: Number(chk.value),
+            series: series,
+            repeticiones: repeticiones,
+          });
+        }
+
+        return { ejercicios };
+      }
+
+      function limpiarFormularioPersonalizado() {
+        $("nombre-personalizada").value = "";
+        document
+          .querySelectorAll("#catalogo-por-grupos-container .chk-ejercicio")
+          .forEach((chk) => {
+            chk.checked = false;
+            chk.closest(".ejercicio-item").classList.remove("seleccionado");
+          });
+      }
+
+      // ------------------------------------------------------------------
+      // Planes especializados
+      // ------------------------------------------------------------------
+      async function cargarPlanes() {
+        const datos = await apiFetch("/planes-especializados");
+        planesEspecializados = datos.planes;
+        const contenedor = $("lista-planes");
+
+        if (!planesEspecializados.length) {
+          contenedor.innerHTML =
+            '<div class="empty-state">Todavía no hay planes especializados disponibles.</div>';
+          return;
+        }
+
+        contenedor.innerHTML = planesEspecializados
+          .map((plan, indice) => {
+            const dias = Array.isArray(plan.dias) ? plan.dias : [];
+            const diasEntrenamiento = dias.filter((d) => !d.es_descanso).length;
+            const totalEjercicios = dias.reduce(
+              (total, dia) =>
+                total +
+                (Array.isArray(dia.ejercicios) ? dia.ejercicios.length : 0),
+              0,
+            );
+            const totalSeries = dias.reduce(
+              (total, dia) =>
+                total +
+                (Array.isArray(dia.ejercicios)
+                  ? dia.ejercicios.reduce(
+                      (suma, ej) => suma + Number(ej.series || 0),
+                      0,
+                    )
+                  : 0),
+              0,
+            );
+            return `
+              <div class="card-option">
+                <div>
+                  <h4>${esc(plan.nombre)}</h4>
+                  <p>${esc(plan.descripcion || "")}</p>
+                  <p class="plan-meta">${diasEntrenamiento} días de entrenamiento · ${totalEjercicios} ejercicios · ${totalSeries} series</p>
+                </div>
+                <div class="card-acciones" style="margin-top: 12px">
+                  <button class="btn btn-info btn-compacto" data-ver="${indice}">Ver ejercicios</button>
+                  <button class="btn btn-compacto" data-elegir="${indice}">Elegir Plan</button>
+                </div>
+              </div>`;
+          })
+          .join("");
+
+        contenedor.querySelectorAll("[data-ver]").forEach((boton) => {
+          boton.addEventListener("click", () =>
+            verDesglose(planesEspecializados[Number(boton.dataset.ver)]),
+          );
+        });
+        contenedor.querySelectorAll("[data-elegir]").forEach((boton) => {
+          boton.addEventListener("click", () =>
+            elegirPlan(
+              planesEspecializados[Number(boton.dataset.elegir)],
+              boton,
+            ),
+          );
+        });
+      }
+
+      async function elegirPlan(plan, boton) {
+        const textoOriginal = boton ? boton.textContent : null;
+        if (boton) {
+          boton.disabled = true;
+          boton.textContent = "Guardando...";
+        }
+
+        try {
+          const datos = await apiFetch("/rutinas/especializadas", {
+            method: "POST",
+            body: JSON.stringify({ id_rutina: plan.id_rutina }),
+          });
+          mostrarToast(datos.mensaje, "success");
+          switchTab(
+            "tab-rutina",
+            document.querySelector('.tab-btn[data-tab="tab-rutina"]'),
+          );
+          await cargarRutinaDelDia();
+        } catch (error) {
+          mostrarToast(error.message, "error");
+        } finally {
+          if (boton) {
+            boton.disabled = false;
+            boton.textContent = textoOriginal;
+          }
+        }
+      }
+
+      function verDesglose(plan) {
+        const caja = $("resultado-desglose-rutina");
+        caja.style.display = "block";
+
+        const dias = Array.isArray(plan.dias) ? plan.dias : [];
+        const semanal = dias
+          .map((dia) => {
+            const nombreDia =
+              (DIAS.find((d) => d.n === dia.dia_semana) || {}).nombre ||
+              `Día ${dia.dia_semana}`;
+            if (dia.es_descanso) {
+              return `
+                <div class="rutina-dia-card descanso">
+                  <h5>🛌 ${esc(nombreDia)} (Día ${dia.dia_semana}): ${esc(dia.enfoque || "Descanso")}</h5>
+                  <p class="muted">Día de recuperación: no hay ejercicios programados.</p>
+                </div>`;
+            }
+            const ejercicios = (dia.ejercicios || [])
+              .map(
+                (ej) =>
+                  `<li><b>${esc(ej.nombre)}</b> <span class="muted">(${esc(ej.grupo_muscular)})</span> — ${ej.series} series × ${ej.repeticiones} repeticiones</li>`,
+              )
+              .join("");
+            return `
+              <div class="rutina-dia-card">
+                <h5>📅 ${esc(nombreDia)} (Día ${dia.dia_semana}): ${esc(dia.enfoque || "Entrenamiento")}</h5>
+                <ul>${ejercicios || "<li>Sin ejercicios registrados.</li>"}</ul>
+              </div>`;
+          })
+          .join("");
+
+        caja.innerHTML = `
+          <div class="desglose-header">
+            <h4>Planificación semanal: ${esc(plan.nombre)}</h4>
+            <button class="btn btn-compacto" id="btn-elegir-desglose" style="max-width: 220px">Elegir este plan</button>
+          </div>
+          <p class="desc-plan">${esc(plan.descripcion || "")}</p>
+          ${semanal || '<div class="empty-state">Este plan todavía no tiene días configurados.</div>'}`;
+
+        document
+          .getElementById("btn-elegir-desglose")
+          .addEventListener("click", (evento) =>
+            elegirPlan(plan, evento.currentTarget),
+          );
+        caja.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      // ------------------------------------------------------------------
+      // Crear plan personalizado
+      // ------------------------------------------------------------------
+      function guardarRutinaPersonalizada() {
+        const nombre = $("nombre-personalizada").value.trim();
+        if (!nombre) {
+          mostrarToast(
+            "El nombre de la rutina es obligatorio. Escribe uno antes de guardar.",
+            "error",
+          );
+          $("nombre-personalizada").focus();
+          return;
+        }
+
+        const resultado = leerEjerciciosSeleccionados();
+        if (resultado.error) {
+          mostrarToast(resultado.error, "error");
+          return;
+        }
+        const ejercicios = resultado.ejercicios;
+        if (!ejercicios.length) {
+          mostrarToast(
+            "Selecciona al menos un ejercicio del catálogo.",
+            "error",
+          );
+          return;
+        }
+
+        abrirSelectorDia({
+          titulo: "¿Qué día entrenarás este plan?",
+          subtitulo: `«${nombre}» · ${ejercicios.length} ejercicio(s). Elige el día en que quieres guardarlo.`,
+          onSelect: async (dia) => {
+            const datos = await apiFetch("/rutinas/personalizada", {
+              method: "POST",
+              body: JSON.stringify({
+                nombre: nombre,
+                dia_semana: dia,
+                ejercicios: ejercicios,
+              }),
+            });
+            mostrarToast(datos.mensaje, "success");
+            limpiarFormularioPersonalizado();
+            await cargarMisRutinas();
+            if (dia === diaActual) {
+              await cargarRutinaDelDia();
+            }
+          },
+        });
+      }
+
+      async function cargarMisRutinas() {
+        const datos = await apiFetch("/rutinas/personalizadas");
+        misRutinas = datos.rutinas;
+        const contenedor = $("lista-mis-rutinas");
+
+        if (!misRutinas.length) {
+          contenedor.innerHTML = `<div class="empty-state"><b>Aún no tienes rutinas personalizadas.</b>Crea una arriba, elige sus ejercicios y guárdala para un día de la semana.</div>`;
+          return;
+        }
+
+        contenedor.innerHTML = misRutinas
+          .map((rutina) => {
+            const dias =
+              rutina.dias.map((d) => d.dia_nombre).join(", ") ||
+              "Sin día asignado";
+            const chips = rutina.ejercicios
+              .map(
+                (ej) =>
+                  `<span class="chip">${esc(ej.nombre)} · ${ej.series}×${ej.repeticiones}</span>`,
+              )
+              .join("");
+            return `
+              <div class="mi-rutina-card">
+                <div style="flex: 1; min-width: 220px">
+                  <h4>${esc(rutina.nombre)}</h4>
+                  <div class="meta">📅 ${esc(dias)} · ${rutina.ejercicios.length} ejercicio(s)</div>
+                  <div class="chips">${chips || '<span class="chip">Sin ejercicios</span>'}</div>
+                </div>
+                <div class="card-acciones">
+                  <button class="btn-mini editar" data-accion="editar" data-id="${rutina.id_rutina}">✏️ Editar</button>
+                  <button class="btn-mini peligro" data-accion="eliminar" data-id="${rutina.id_rutina}">🗑️ Eliminar</button>
+                </div>
+              </div>`;
+          })
+          .join("");
+
+        contenedor.querySelectorAll("[data-accion='editar']").forEach((b) => {
+          b.addEventListener("click", () =>
+            abrirEditor(Number(b.dataset.id)),
+          );
+        });
+        contenedor.querySelectorAll("[data-accion='eliminar']").forEach((b) => {
+          b.addEventListener("click", () => {
+            const rutina = misRutinas.find(
+              (r) => r.id_rutina === Number(b.dataset.id),
+            );
+            if (rutina) eliminarRutinaPersonalizada(rutina);
+          });
+        });
+      }
+
+      async function eliminarRutinaPersonalizada(rutina) {
+        const confirmado = await confirmar(
+          `¿Eliminar definitivamente el plan personalizado «${rutina.nombre}»? Se borrarán sus ejercicios y su asignación a los días.`,
+          "Sí, eliminar",
+        );
+        if (!confirmado) return;
+
+        try {
+          const datos = await apiFetch(
+            `/rutinas/personalizadas/${rutina.id_rutina}`,
+            { method: "DELETE" },
+          );
+          mostrarToast(datos.mensaje, "success");
+          await Promise.all([cargarMisRutinas(), cargarRutinaDelDia()]);
+        } catch (error) {
+          mostrarToast(error.message, "error");
+        }
+      }
+
+      // ------------------------------------------------------------------
+      // Rutina del día
+      // ------------------------------------------------------------------
+      function cambiarDia() {
+        const valor = Number($("dia-semana").value);
+        diaActual = DIAS.some((d) => d.n === valor) ? valor : 1;
+        cargarRutinaDelDia();
+      }
+
+      async function cargarRutinaDelDia() {
+        if (!token) return;
+        const nombreDia =
+          (DIAS.find((d) => d.n === diaActual) || DIAS[0]).nombre;
+        const caja = $("resultado-rutina");
+        caja.style.display = "block";
+        caja.innerHTML = `<div class="loading">Consultando las rutinas del ${nombreDia}...</div>`;
+
+        try {
+          const datos = await apiFetch(`/rutinas/dia/${diaActual}`);
+          renderRutinaDia(datos);
+        } catch (error) {
+          caja.innerHTML = `<div class="empty-state" style="border-color: rgba(255,82,82,.6)">⚠️ ${esc(error.message)}</div>`;
+        }
+      }
+
+      function renderRutinaDia(datos) {
+        ultimoDia = datos;
+        const caja = $("resultado-rutina");
+        caja.style.display = "block";
+
+        if (!datos.rutinas.length) {
+          caja.innerHTML = `
+            <div class="empty-state">
+              <b>No hay rutinas guardadas para el ${esc(datos.dia_nombre)}.</b>
+              Elige un plan especializado o crea un plan personalizado y guárdalo para este día.
+            </div>`;
+          return;
+        }
+
+        const tarjetas = datos.rutinas
+          .map((rutina, indiceRutina) => {
+            const especializada = rutina.tipo === "ESPECIALIZADA";
+            const esDescanso = especializada && Boolean(rutina.es_descanso);
+            const lista = Array.isArray(rutina.ejercicios)
+              ? rutina.ejercicios
+              : [];
+            const ejercicios = lista.length
+              ? lista
+                  .map(
+                    (ej, indiceEjercicio) => `
+                      <div class="ejercicio-explicado-card">
+                        ${miniaturaHtml(ej,'rutina-ejercicio-mini')}
+                        <div class="rutina-ejercicio-cuerpo">
+                        <div class="ejercicio-titulo">
+                          <h4>${esc(ej.nombre)}</h4>
+                          <button
+                            class="btn-mini ver-ejercicio"
+                            type="button"
+                            data-ver-ejercicio="${indiceEjercicio}"
+                            data-rutina="${indiceRutina}"
+                          >👁️ Ver ejercicio</button>
+                        </div>
+                        <div class="meta">Grupo: ${esc(ej.grupo_muscular)} · ${ej.series} series × ${ej.repeticiones} repeticiones</div>
+                        <div class="desc">${esc(ej.descripcion || "Mantén una técnica controlada y respiración constante durante el movimiento.")}</div>
+                        </div>
+                      </div>`,
+                  )
+                  .join("")
+              : esDescanso
+                ? `<div class="empty-state" style="border-color: rgba(0,230,118,.45)"><b>🛌 Día de descanso</b>${esc(rutina.enfoque || "Recuperación")}. No hay ejercicios programados.</div>`
+                : '<p class="muted">Este plan todavía no tiene ejercicios registrados.</p>';
+
+            const acciones = especializada
+              ? `<button class="btn-mini peligro" data-accion="quitar-plan">🗑️ Quitar plan semanal</button>`
+              : `
+                  <button class="btn-mini editar" data-accion="editar" data-id="${rutina.id_rutina}">✏️ Editar</button>
+                  <button class="btn-mini peligro" data-accion="eliminar" data-id="${rutina.id_rutina}">🗑️ Eliminar plan</button>`;
+
+            return `
+              <div class="rutina-dia-card ${esDescanso ? "descanso" : ""}">
+                <div class="card-header-row">
+                  <div>
+                    <h5>${esc(rutina.nombre)}</h5>
+                    <span class="badge-tipo ${especializada ? "especializada" : "personalizada"}">
+                      ${especializada ? "Plan especializado" : "Plan personalizado"}
+                    </span>
+                    ${
+                      especializada && rutina.enfoque
+                        ? `<div class="plan-meta" style="margin-top: 6px">${esc(rutina.enfoque)}</div>`
+                        : ""
+                    }
+                  </div>
+                  <div class="card-acciones">${acciones}</div>
+                </div>
+                ${rutina.descripcion ? `<p class="desc-plan">${esc(rutina.descripcion)}</p>` : ""}
+                ${ejercicios}
+              </div>`;
+          })
+          .join("");
+
+        caja.innerHTML = `
+          <h4 class="resultado-titulo">📅 ${esc(datos.dia_nombre)} · ${datos.rutinas.length} rutina(s) guardada(s)</h4>
+          ${tarjetas}`;
+
+        caja.querySelectorAll("[data-accion='editar']").forEach((boton) => {
+          boton.addEventListener("click", () =>
+            abrirEditor(Number(boton.dataset.id)),
+          );
+        });
+        caja.querySelectorAll("[data-accion='eliminar']").forEach((boton) => {
+          const rutina = datos.rutinas.find(
+            (r) =>
+              r.tipo === "PERSONALIZADA" &&
+              r.id_rutina === Number(boton.dataset.id),
+          );
+          if (rutina) {
+            boton.addEventListener("click", () =>
+              eliminarRutinaPersonalizada(rutina),
+            );
+          }
+        });
+        caja.querySelectorAll("[data-accion='quitar-plan']").forEach((boton) => {
+          const rutina = datos.rutinas.find(
+            (r) => r.tipo === "ESPECIALIZADA",
+          );
+          if (rutina) {
+            boton.addEventListener("click", () =>
+              quitarPlanEspecializado(rutina),
+            );
+          }
+        });
+        caja
+          .querySelectorAll("[data-ver-ejercicio]")
+          .forEach((boton) => {
+            const rutina = datos.rutinas[Number(boton.dataset.rutina)];
+            const ejercicio =
+              rutina && Array.isArray(rutina.ejercicios)
+                ? rutina.ejercicios[Number(boton.dataset.verEjercicio)]
+                : null;
+            if (ejercicio) {
+              boton.addEventListener("click", () =>
+                abrirDemoEjercicio(ejercicio, boton),
+              );
+            }
+          });
+      }
+
+      // ------------------------------------------------------------------
+      // Demostración individual de un ejercicio (solo en Rutina del día)
+      // ------------------------------------------------------------------
+      function buscarDemoEjercicio(nombre) {
+        if (typeof DEMO_EJERCICIOS === "undefined" || !DEMO_EJERCICIOS) {
+          return null;
+        }
+        if (DEMO_EJERCICIOS[nombre]) return DEMO_EJERCICIOS[nombre];
+        const clave = Object.keys(DEMO_EJERCICIOS).find(
+          (item) => item.toLowerCase() === String(nombre).toLowerCase(),
+        );
+        return clave ? DEMO_EJERCICIOS[clave] : null;
+      }
+
+      function abrirDemoEjercicio(ejercicio, botonOrigen) {
+        botonEjercicioActivo = botonOrigen || null;
+        const nombre = ejercicio.nombre || "Ejercicio";
+        const demo = buscarDemoEjercicio(nombre);
+
+        $("modal-ejercicio-titulo").textContent = nombre;
+
+        const meta = [];
+        if (ejercicio.grupo_muscular) {
+          meta.push(`Grupo: ${ejercicio.grupo_muscular}`);
+        }
+        if (
+          ejercicio.series !== undefined &&
+          ejercicio.repeticiones !== undefined
+        ) {
+          meta.push(
+            `${ejercicio.series} series × ${ejercicio.repeticiones} repeticiones`,
+          );
+        }
+        $("modal-ejercicio-meta").textContent = meta.join(" · ");
+        $("modal-ejercicio-resumen").textContent =
+          ejercicio.descripcion ||
+          (demo
+            ? "Revisa la demostración y aplica la técnica antes de sumar carga."
+            : "Todavía no hay una demostración específica para este ejercicio.");
+
+        const galeria = $("modal-ejercicio-galeria");
+        const medio = mediosAprobados.get(Number(ejercicio.id_ejercicio));
+        if (medio) {
+          const direccion = `${API_BASE}/propuestas/${medio.id_propuesta}/archivo-publico`;
+          if (medio.tipo_media === 'video') {
+            galeria.innerHTML = `<figure style="grid-column:1/-1"><video controls preload="metadata"
+              style="width:100%;max-height:420px;background:#000;border-radius:10px" src="${esc(direccion)}"></video>
+              <figcaption>Demostración aportada por la comunidad</figcaption></figure>`;
+          } else {
+            galeria.innerHTML = `<figure style="grid-column:1/-1"><img src="${esc(direccion)}"
+              alt="Demostración de ${esc(nombre)}" onerror="cambiarImagenAlternativa(this)">
+              <figcaption>Ejercicio propuesto y aprobado</figcaption></figure>`;
+          }
+        } else if (demo && demo.demo) {
+          galeria.innerHTML = [0,1].map((numero) => `
+            <figure><img src="assets/ejercicios/${encodeURIComponent(demo.demo)}/${numero}.jpg"
+              data-slug="${esc(demo.demo)}" data-numero="${numero}"
+              alt="${esc(nombre)} - posición ${numero+1}"
+              onerror="cambiarImagenAlternativa(this)" loading="lazy">
+              <figcaption>${numero === 0 ? 'Posición inicial':'Posición final'}</figcaption></figure>`).join('');
+        } else {
+          galeria.innerHTML = '<div class="demo-sin-media">Sin una foto específica. Consulta las instrucciones y recomendaciones técnicas.</div>';
+        }
+
+        const pasos =
+          demo && Array.isArray(demo.pasos) && demo.pasos.length
+            ? demo.pasos
+            : [
+                ejercicio.descripcion ||
+                  "Realiza el movimiento de forma controlada y con un rango que puedas dominar.",
+                "Mantén una respiración constante y detente si sientes dolor agudo.",
+              ];
+        const consejos =
+          demo && Array.isArray(demo.consejos) && demo.consejos.length
+            ? demo.consejos
+            : [
+                "Prioriza la técnica sobre la cantidad de peso.",
+                "Ajusta el rango de movimiento a tu movilidad y experiencia.",
+              ];
+
+        $("modal-ejercicio-pasos").innerHTML = pasos
+          .map((paso) => `<li>${esc(paso)}</li>`)
+          .join("");
+        $("modal-ejercicio-consejos").innerHTML = consejos
+          .map((consejo) => `<li>${esc(consejo)}</li>`)
+          .join("");
+
+        const enlaceVideo = $("modal-ejercicio-video");
+        enlaceVideo.href =
+          "https://www.youtube.com/results?search_query=" +
+          encodeURIComponent(`${nombre} técnica correcta`);
+        enlaceVideo.textContent = "🔎 Buscar video demostrativo";
+
+        abrirModal("modal-ejercicio");
+        const cerrar = $("modal-ejercicio").querySelector(".modal-cerrar");
+        if (cerrar) cerrar.focus({ preventScroll: true });
+      }
+
+      function cerrarDemoEjercicio() {
+        cerrarModal("modal-ejercicio");
+        if (
+          botonEjercicioActivo &&
+          document.contains(botonEjercicioActivo)
+        ) {
+          botonEjercicioActivo.focus({ preventScroll: true });
+        }
+        botonEjercicioActivo = null;
+      }
+
+      async function quitarPlanEspecializado(rutina) {
+        const confirmado = await confirmar(
+          `¿Quitar el plan semanal «${rutina.nombre}»? Se eliminarán sus 7 días de tu planificación. Las rutinas personalizadas se conservan.`,
+          "Sí, quitar plan",
+        );
+        if (!confirmado) return;
+
+        try {
+          const datos = await apiFetch("/rutinas/especializadas/activa", {
+            method: "DELETE",
+          });
+          mostrarToast(datos.mensaje, "success");
+          await cargarRutinaDelDia();
+        } catch (error) {
+          mostrarToast(error.message, "error");
+        }
+      }
+
+      // ------------------------------------------------------------------
+      // Edición de planes personalizados
+      // ------------------------------------------------------------------
+      function abrirEditor(idRutina) {
+        let rutina = misRutinas.find((r) => r.id_rutina === idRutina);
+
+        if (!rutina && ultimoDia) {
+          const enDia = ultimoDia.rutinas.find(
+            (r) =>
+              r.tipo === "PERSONALIZADA" && r.id_rutina === idRutina,
+          );
+          if (enDia) {
+            rutina = {
+              id_rutina: enDia.id_rutina,
+              nombre: enDia.nombre,
+              descripcion: enDia.descripcion || "",
+              dias: [{ dia_semana: ultimoDia.dia_semana }],
+              ejercicios: enDia.ejercicios,
+            };
+          }
+        }
+
+        if (!rutina) {
+          mostrarToast(
+            "La rutina ya no está disponible. Actualiza la lista e inténtalo de nuevo.",
+            "error",
+          );
+          return;
+        }
+
+        rutinaEnEdicion = {
+          id_rutina: rutina.id_rutina,
+          nombre: rutina.nombre,
+          descripcion: rutina.descripcion || "",
+          dia_semana:
+            rutina.dias.length > 0 ? rutina.dias[0].dia_semana : diaActual,
+          ejercicios: rutina.ejercicios.map((ej) => ({
+            id_ejercicio: ej.id_ejercicio,
+            nombre: ej.nombre,
+            series: ej.series,
+            repeticiones: ej.repeticiones,
+          })),
+        };
+
+        $("edit-nombre").value = rutinaEnEdicion.nombre;
+        $("edit-dia").innerHTML = DIAS.map(
+          (d) =>
+            `<option value="${d.n}" ${d.n === rutinaEnEdicion.dia_semana ? "selected" : ""}>${d.n} - ${d.nombre}</option>`,
+        ).join("");
+
+        llenarSelectAgregar();
+        renderEditorEjercicios();
+        abrirModal("modal-editar");
+      }
+
+      function llenarSelectAgregar() {
+        const grupos = new Map();
+        catalogoEjercicios.forEach((ej) => {
+          const grupo = ej.grupo_muscular || "General";
+          if (!grupos.has(grupo)) grupos.set(grupo, []);
+          grupos.get(grupo).push(ej);
+        });
+
+        let html = '<option value="">Selecciona un ejercicio...</option>';
+        for (const [grupo, lista] of grupos) {
+          html += `<optgroup label="${esc(grupo)}">`;
+          lista.forEach((ej) => {
+            html += `<option value="${ej.id_ejercicio}">${esc(ej.nombre)}</option>`;
+          });
+          html += `</optgroup>`;
+        }
+        $("edit-agregar").innerHTML = html;
+      }
+
+      function renderEditorEjercicios() {
+        const contenedor = $("edit-ejercicios");
+        if (!rutinaEnEdicion.ejercicios.length) {
+          contenedor.innerHTML =
+            '<div class="empty-state" style="padding: 16px">Agrega al menos un ejercicio para poder guardar el plan.</div>';
+          return;
+        }
+
+        contenedor.innerHTML = rutinaEnEdicion.ejercicios
+          .map(
+            (ej, indice) => `
+              <div class="edit-ejercicio">
+                <div class="edit-nombre">${esc(ej.nombre)}</div>
+                <div class="series-reps">
+                  <input type="number" class="num-input" min="1" max="99" value="${ej.series}"
+                    data-campo="series" data-index="${indice}" aria-label="Series">
+                  <span>×</span>
+                  <input type="number" class="num-input" min="1" max="99" value="${ej.repeticiones}"
+                    data-campo="repeticiones" data-index="${indice}" aria-label="Repeticiones">
+                  <button class="btn-mini peligro" data-quitar="${indice}" title="Quitar ejercicio">✕</button>
+                </div>
+              </div>`,
+          )
+          .join("");
+
+        contenedor.querySelectorAll("input").forEach((input) => {
+          input.addEventListener("input", () => {
+            const indice = Number(input.dataset.index);
+            rutinaEnEdicion.ejercicios[indice][input.dataset.campo] = Number(
+              input.value,
+            );
+          });
+        });
+
+        contenedor.querySelectorAll("[data-quitar]").forEach((boton) => {
+          boton.addEventListener("click", () => {
+            rutinaEnEdicion.ejercicios.splice(Number(boton.dataset.quitar), 1);
+            renderEditorEjercicios();
+          });
+        });
+      }
+
+      function agregarEjercicioEdicion() {
+        const id = Number($("edit-agregar").value);
+        if (!id) {
+          mostrarToast("Selecciona un ejercicio para agregar.", "error");
+          return;
+        }
+        if (rutinaEnEdicion.ejercicios.some((ej) => ej.id_ejercicio === id)) {
+          mostrarToast("Ese ejercicio ya está en la rutina.", "error");
+          return;
+        }
+        const ejercicio = catalogoEjercicios.find((ej) => ej.id_ejercicio === id);
+        if (!ejercicio) {
+          mostrarToast("El ejercicio seleccionado no existe.", "error");
+          return;
+        }
+        rutinaEnEdicion.ejercicios.push({
+          id_ejercicio: id,
+          nombre: ejercicio.nombre,
+          series: 4,
+          repeticiones: 10,
+        });
+        $("edit-agregar").value = "";
+        renderEditorEjercicios();
+      }
+
+      async function guardarEdicion() {
+        if (!rutinaEnEdicion) return;
+
+        const nombre = $("edit-nombre").value.trim();
+        if (!nombre) {
+          mostrarToast("El nombre de la rutina es obligatorio.", "error");
+          return;
+        }
+        if (!rutinaEnEdicion.ejercicios.length) {
+          mostrarToast("La rutina debe tener al menos un ejercicio.", "error");
+          return;
+        }
+        for (const ej of rutinaEnEdicion.ejercicios) {
+          if (!Number.isInteger(ej.series) || ej.series < 1 || ej.series > 99) {
+            mostrarToast("Las series deben ser un número entre 1 y 99.", "error");
+            return;
+          }
+          if (
+            !Number.isInteger(ej.repeticiones) ||
+            ej.repeticiones < 1 ||
+            ej.repeticiones > 99
+          ) {
+            mostrarToast(
+              "Las repeticiones deben ser un número entre 1 y 99.",
+              "error",
+            );
+            return;
+          }
+        }
+
+        const dia = Number($("edit-dia").value);
+
+        try {
+          const datos = await apiFetch(
+            `/rutinas/personalizadas/${rutinaEnEdicion.id_rutina}`,
+            {
+              method: "PUT",
+              body: JSON.stringify({
+                nombre: nombre,
+                descripcion: rutinaEnEdicion.descripcion,
+                dia_semana: dia,
+                ejercicios: rutinaEnEdicion.ejercicios.map((ej) => ({
+                  id_ejercicio: ej.id_ejercicio,
+                  series: ej.series,
+                  repeticiones: ej.repeticiones,
+                })),
+              }),
+            },
+          );
+          cerrarModal("modal-editar");
+          rutinaEnEdicion = null;
+          mostrarToast(datos.mensaje, "success");
+          await Promise.all([cargarMisRutinas(), cargarRutinaDelDia()]);
+        } catch (error) {
+          mostrarToast(error.message, "error");
+        }
+      }
+
+      // ------------------------------------------------------------------
+      // Asistencia
+      // ------------------------------------------------------------------
+      async function registrarAsistencia() {
+        try {
+          const datos = await apiFetch("/asistencia", { method: "POST" });
+          mostrarToast(datos.mensaje, "success");
+          await actualizarMetricas();
+        } catch (error) {
+          mostrarToast(error.message, "error");
+        }
+      }
+
+      // ------------------------------------------------------------------
+      // Arranque
+      // ------------------------------------------------------------------
+      document.addEventListener("DOMContentLoaded", async () => {
+        document.querySelectorAll('.ih-toggle-pass').forEach((boton) => {
+          boton.addEventListener('click', () => {
+            const campo = $(boton.dataset.target);
+            campo.type = campo.type === 'password' ? 'text' : 'password';
+            boton.textContent = campo.type === 'password' ? 'Ver' : 'Ocultar';
+            boton.setAttribute('aria-label', campo.type === 'password' ? 'Mostrar contraseña' : 'Ocultar contraseña');
+          });
+        });
+        document.querySelectorAll(".modal-overlay").forEach((overlay) => {
+          overlay.addEventListener("mousedown", (evento) => {
+            if (evento.target !== overlay) return;
+            if (overlay.id === "modal-confirmar") {
+              responderConfirmacion(false);
+            } else if (overlay.id === "modal-ejercicio") {
+              cerrarDemoEjercicio();
+            } else {
+              overlay.classList.remove("visible");
+            }
+          });
+        });
+
+        document.addEventListener("keydown", (evento) => {
+          if (evento.key !== "Escape") return;
+          const abierto = document.querySelector(".modal-overlay.visible");
+          if (!abierto) return;
+          if (abierto.id === "modal-confirmar") {
+            responderConfirmacion(false);
+          } else if (abierto.id === "modal-ejercicio") {
+            cerrarDemoEjercicio();
+          } else {
+            abierto.classList.remove("visible");
+          }
+        });
+
+        if (token && usuarioActual) {
+          try {
+            const datos = await apiFetch("/auth/perfil");
+            usuarioActual = datos.usuario;
+            localStorage.setItem(
+              "ironhub_usuario",
+              JSON.stringify(usuarioActual),
+            );
+            await entrarAlPanel();
+            if (Number(usuarioActual?.id_rol) === 1) {
+              switchTab('tab-admin', document.querySelector('[data-tab="tab-admin"]'));
+            }
+            return;
+          } catch (error) {
+            // Token vencido o inválido: se limpia la sesión y se muestra el login.
+          }
+        }
+        cerrarSesion(true);
+      });
+    </script>
+      <script src="ironhub-3-1.js" charset="UTF-8"></script>
+  </body>
+</html>

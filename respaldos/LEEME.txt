@@ -1,0 +1,2 @@
+Los respaldos locales pueden contener datos personales y archivos de usuarios.
+No los subas a repositorios publicos.

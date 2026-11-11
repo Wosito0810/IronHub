@@ -1,0 +1,5 @@
+IRONHUB 3.1
+============
+Esta es la edición actualizada. Lee GUIA_INSTALACION_3_1.txt antes de copiar
+los archivos o ejecutar cualquier SQL.
+NUNCA vuelvas a ejecutar script_rionhub.sql sobre tu base de datos actual.
