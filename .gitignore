@@ -6,3 +6,6 @@ backend/uploads/propuestas/*
 __pycache__/
 *.pyc
 respaldos/*.zip
+
+.vercel/
+.env.local

@@ -1,0 +1,12 @@
+# Archivos que no deben subirse a Vercel
+backend/.env
+backend/.jwt_secret
+backend/.venv
+backend/uploads
+backend/__pycache__
+**/__pycache__
+.env.local
+.vercel
+respaldos
+tests
+.vscode
