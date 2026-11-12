@@ -7,6 +7,7 @@ from werkzeug.exceptions import HTTPException
 
 import mysql.connector
 
+from database import DatabaseManager
 from errors import ApiError
 from security import token_requerido
 from services import (
@@ -70,7 +71,22 @@ def manejar_error_inesperado(error):
 # ----------------------------------------------------------------------
 @app.route('/api/health', methods=['GET'])
 def health():
-    return jsonify({"estado": "ok"}), 200
+    """Estado del servicio y de la conexion a MySQL.
+
+    El codigo es el errno de MySQL (2003 sin conexion, 1045 acceso
+    denegado, 1049 base inexistente, 2026 error de SSL, etc.).
+    """
+    estado = {"estado": "ok"}
+    try:
+        conexion = DatabaseManager.get_instance().get_connection()
+        conexion.close()
+        estado["base_datos"] = "ok"
+    except mysql.connector.Error as error:
+        estado["base_datos"] = "error"
+        estado["codigo"] = error.errno
+    except Exception:
+        estado["base_datos"] = "error"
+    return jsonify(estado), 200
 
 
 @app.route('/api/auth/login', methods=['POST'])

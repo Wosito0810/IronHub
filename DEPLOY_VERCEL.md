@@ -49,6 +49,17 @@ Si la base viene de una versión anterior, aplicar también las migraciones de
 
 ### Variables de entorno (Vercel → Settings → Environment Variables)
 
+La forma más corta es una sola variable con la *Service URI* del proveedor:
+
+```
+MYSQL_URL=mysql://usuario:clave@host:puerto/base?ssl-mode=REQUIRED
+```
+
+Si `MYSQL_URL` (o `DATABASE_URL`) existe, tiene prioridad sobre las variables
+sueltas. El backend detecta `ssl-mode=REQUIRED` y activa TLS automáticamente.
+
+También se pueden usar las variables por separado:
+
 | Variable | Ejemplo | Notas |
 |---|---|---|
 | `DB_HOST` | `mysql-xxxx.aivencloud.com` | Host público del proveedor. |
@@ -62,6 +73,18 @@ Si la base viene de una versión anterior, aplicar también las migraciones de
 
 `DB_SSL_CA` es opcional: ruta al certificado del proveedor si exige verificar
 la cadena.
+
+### Cargar el esquema en la base remota
+
+Con la Service URI a mano, no hace falta instalar MySQL Workbench:
+
+```bash
+python importar_base_nube.py "mysql://usuario:clave@host:puerto/base?ssl-mode=REQUIRED"
+```
+
+El script crea la base si no existe, ejecuta `database/script_rionhub.sql`
+(respetando la base de la URI, sin borrar nada) y verifica las tablas. Al final
+imprime las variables que hay que pegar en Vercel.
 
 ---
 
@@ -94,8 +117,12 @@ npx vercel --prod
 1. `https://TU-PROYECTO.vercel.app/api/health` debe responder:
 
    ```json
-   {"estado": "ok"}
+   {"estado": "ok", "base_datos": "ok"}
    ```
+
+   Si `base_datos` es `error`, el campo `codigo` indica la causa:
+   `2003` no hay conexión, `1045` usuario o clave incorrectos,
+   `1049` la base no existe, `2026` problema de SSL.
 
 2. Abrir la raíz: debe cargar el login de IRONHUB.
 3. Iniciar sesión con un usuario cargado en la base en la nube.
