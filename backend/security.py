@@ -26,9 +26,14 @@ def _get_secret():
     try:
         with ruta.open('x', encoding='ascii') as f:
             f.write(secrets.token_urlsafe(48))
+        return ruta.read_text(encoding='ascii').strip()
     except FileExistsError:
-        pass
-    return ruta.read_text(encoding='ascii').strip()
+        return ruta.read_text(encoding='ascii').strip()
+    except OSError:
+        # Entornos de solo lectura (Vercel): no se puede escribir el archivo.
+        # Se usa una clave efimera; en produccion JWT_SECRET debe estar
+        # definida como variable de entorno para que los tokens sobrevivan.
+        return secrets.token_urlsafe(48)
 
 
 SECRET_KEY = _get_secret()

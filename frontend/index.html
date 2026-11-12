@@ -1573,7 +1573,11 @@
     <script src="ejercicios_demo.js" charset="UTF-8"></script>
     <script src="mejoras.js" charset="UTF-8"></script>
     <script>
-      const API_BASE = "http://127.0.0.1:5050/api";
+      const API_BASE =
+        location.protocol === "file:" ||
+        ["localhost", "127.0.0.1", ""].includes(location.hostname)
+          ? "http://127.0.0.1:5050/api"
+          : "/api";
       const DIAS = [
         { n: 1, nombre: "Lunes" },
         { n: 2, nombre: "Martes" },

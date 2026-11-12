@@ -5,6 +5,8 @@ from propuestas import propuestas_bp
 from extras import extras_bp
 from werkzeug.exceptions import HTTPException
 
+import mysql.connector
+
 from errors import ApiError
 from security import token_requerido
 from services import (
@@ -47,6 +49,14 @@ def manejar_api_error(error):
 @app.errorhandler(HTTPException)
 def manejar_http_error(error):
     return jsonify({"error": error.description}), error.code
+
+
+@app.errorhandler(mysql.connector.Error)
+def manejar_error_base_datos(error):
+    app.logger.exception("Error de base de datos: %s", error)
+    return jsonify({
+        "error": "No se pudo conectar con la base de datos. Revisa la configuracion del servidor."
+    }), 503
 
 
 @app.errorhandler(Exception)

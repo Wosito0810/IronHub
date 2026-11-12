@@ -17,7 +17,24 @@ from errors import ApiError
 from security import token_requerido
 
 propuestas_bp = Blueprint('propuestas', __name__)
-BASE_UPLOADS = Path(__file__).resolve().parent / 'uploads' / 'propuestas'
+
+
+def _base_uploads():
+    """Carpeta de archivos subidos.
+
+    En local se mantiene backend/uploads/propuestas. En Vercel el disco
+    del proyecto es de solo lectura, asi que se usa /tmp (unico lugar
+    escribible); se puede cambiar con la variable UPLOAD_DIR.
+    """
+    personalizada = os.getenv('UPLOAD_DIR', '').strip()
+    if personalizada:
+        return Path(personalizada)
+    if os.getenv('VERCEL'):
+        return Path('/tmp/uploads/propuestas')
+    return Path(__file__).resolve().parent / 'uploads' / 'propuestas'
+
+
+BASE_UPLOADS = _base_uploads()
 MAX_MEDIA = 25 * 1024 * 1024
 EXTENSIONES = {'.jpg': 'imagen', '.jpeg': 'imagen', '.png': 'imagen',
                '.webp': 'imagen', '.mp4': 'video', '.webm': 'video'}

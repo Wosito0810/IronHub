@@ -1,0 +1,8 @@
+# Dependencias que instala Vercel (raiz del repositorio).
+# Son las mismas de backend/requirements.txt, que se usa en local.
+Flask==3.0.2
+mysql-connector-python==8.3.0
+Werkzeug==3.0.1
+PyJWT==2.8.0
+python-dotenv==1.0.1
+Flask-Cors==5.0.1
