@@ -86,6 +86,13 @@ El script crea la base si no existe, ejecuta `database/script_rionhub.sql`
 (respetando la base de la URI, sin borrar nada) y verifica las tablas. Al final
 imprime las variables que hay que pegar en Vercel.
 
+Después hay que añadir las tablas de las migraciones (propuestas, notificaciones
+y entrenamientos). El script es seguro de repetir:
+
+```bash
+python aplicar_migraciones_nube.py "mysql://usuario:clave@host:puerto/base?ssl-mode=REQUIRED"
+```
+
 ---
 
 ## 4. Pasos en Vercel

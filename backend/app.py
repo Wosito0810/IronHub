@@ -55,6 +55,12 @@ def manejar_http_error(error):
 @app.errorhandler(mysql.connector.Error)
 def manejar_error_base_datos(error):
     app.logger.exception("Error de base de datos: %s", error)
+    # 1146: tabla inexistente, 1054: columna inexistente, 1051: tabla referenciada inexistente.
+    if error.errno in (1146, 1054, 1051):
+        return jsonify({
+            "error": "La base de datos esta incompleta: falta aplicar una migracion. "
+                     "Ejecuta aplicar_migraciones_nube.py sobre la base de datos."
+        }), 503
     return jsonify({
         "error": "No se pudo conectar con la base de datos. Revisa la configuracion del servidor."
     }), 503
